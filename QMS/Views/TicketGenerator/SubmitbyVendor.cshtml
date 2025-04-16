@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewData["Title"] = "SubmitbyVendor";
+    Layout = null;
+    var dt = ViewBag.dt as System.Data.DataTable;
+    var count = 1;
+}
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+<nav class="navbar bg-body-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="~/groupl.jfif" alt="Logo" width="150"  class="d-inline-block align-text-top">
+        </a>
+
+    </div>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="~/js/SubmitByVendor.js"></script>
+<script>
+   
+
+
+</script>
+
+@{
+
+    @if (dt != null && dt.Rows.Count > 0)
+{
+    <div class="container">
+        <input type="hidden" id="ticketno" value="@ViewBag.ticketNo" />
+        <h3 class="text-center">Update Items</h3>
+
+        <div class="table-responsive mt-2">
+            <table class="table table-striped table-hover table-bordered" id="data-table">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th class="d-none"></th>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Item Unit</th>
+                        <th>Item Rate</th>
+                        <th>Item Qty</th>
+                        <th>Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="quotationTableBody">
+                    @foreach (System.Data.DataRow row in dt.Rows)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td class="d-none" id="Id">@row["Id"]</td>
+                            <td>@row["ItemCode"]</td>
+                            <td>@row["ItemName"]</td>
+                            <td>@row["ItemUnit"]</td>
+                            <td>
+                                    <input type="text" value="@row["ItemRate"]" id="rate" class="rate-input" oninput="changeamt(this.value)" />
+
+                            </td>
+                            <td id="qty">@row["ItemQty"]</td>
+                            <td id="totalamt">
+                                 @((Convert.ToInt32(row["ItemQty"]) * Convert.ToDecimal(row["ItemRate"] ?? 0)))
+                            </td>
+                        </tr>
+                        count++;
+                    }
+                </tbody>
+            </table>
+            <button class="btn btn-success" onclick="Update()">Update</button>
+        </div>
+    </div>
+
+
+}
+else{
+        <div class="container mt-4">
+            <div class="alert alert-info text-center">
+                <strong>You Have Already Submitted Update Items.</strong>
+            </div>
+        </div>
+}
+}
+
+
+
+

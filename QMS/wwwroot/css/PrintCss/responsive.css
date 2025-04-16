@@ -1,0 +1,450 @@
+
+@media only screen and (min-width:200px) and (max-width:767px) {
+
+.main-header.sticky {
+    position: relative;
+}
+.top-bar-left {
+    padding: 9px 0;
+}
+.top-bar-right.text-right {
+    text-align: center !important;
+}
+	
+.stellarnav {
+    margin-top: 0;
+    text-align: left;
+}
+.stellarnav.mobile {
+text-align: right;
+}
+	.stellarnav.mobile.right > ul {
+    z-index: 9999;
+}
+a.menu-toggle {
+    padding: 0 !important;
+}
+	.main-header {
+    padding: 8px 0;
+}
+
+	a.free-trial-btn {
+    font-size: 13px;
+	padding: 9px 6px;
+}
+
+.stellarnav > ul > li > a {
+    color: #000!important;
+}
+.logo {
+    padding-bottom: 22px;
+    text-align: center;
+}
+	.logo img {
+    width: 200px;
+}
+ul.header-list {
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+	ul.header-list > li:first-child {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    justify-content: center;
+}
+	ul.social-icon {
+    justify-content: center;
+    margin-bottom: 9px;
+}
+	ul.header-list > li {
+    margin-left: 6px;
+    margin-right: 6px;
+}
+	.banner-overlay {
+    top: 0;
+}
+	.banner-overlay h1 {
+    font-size: 15px;
+}
+	#BannerSlider .owl-prev {
+    display: none !important;
+}
+	#BannerSlider .owl-next {
+    display: none !important;
+}
+	.header-sarch span {
+    color: #000;
+    font-size: 19px;
+    margin-right: 0;
+    margin-bottom: 8px;
+    display: block;
+}
+	.header-sarch {
+    display: block;
+}
+.header-sarch button {
+    top: 36px;
+    height: auto;
+    padding: 14px 20px;
+    font-size: 23px;
+}
+.home-three h2 {
+    font-size: 20px;
+    margin: 20px 0 24px 0;
+}
+	.home-three p {
+    font-size: 16px;
+    margin: 0 0 35px 0;
+}
+	.widget-thee-boxes h5 {
+    font-size: 17px;
+}
+	.widget-thee-boxes h3 {
+    font-size: 16px;
+}
+.widget-thee-boxes ul li {
+    font-size: 12px;
+}
+	.widget-thee-boxes {
+    padding: 22px 15px;
+    margin-bottom: 30px;
+}
+	.middle-box-content {
+    height: auto;
+}
+	.sidebar-area {
+    min-height: auto;
+}
+	.publication {
+    padding: 39px 0;
+}
+	.publication h2 {
+    font-size: 21px;
+    margin: 0 0 36px 0;
+	text-align: center;
+}
+	.publication h2::before {
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
+	.publication h2::after {
+    bottom: -14px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
+	.publication-box {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 15px;
+		text-align: center;
+}
+	.footer-logo-ection ul {
+    flex-direction: column;
+}
+	.footer-logo-ection ul li {
+    border-right: none;
+    border-bottom: 1px solid #dbdbdc;
+}
+	ul.footer-social {
+    justify-content: center;
+    margin-top: 15px;
+}
+	.right-panel {
+    margin-top: 0;
+    position: fixed;
+    top: 152px;
+    left: 0;
+    z-index: 9999;
+    width: 287px;
+}
+	h2.selection-title {
+    font-size: 12px;
+    padding: 14px 17px 14px 50px;
+    border-radius: 0 0 7px 7px;
+    cursor: pointer;
+    margin: 0;
+    position: absolute;
+    transform: rotate(-90deg);
+    left: -62px;
+}
+	.sidebar-area {
+    position: fixed;
+    width: 0;
+    right: 0;
+    transition: .3s ease-in-out;
+	overflow-y: scroll;
+}
+	.sidebar-area.active {
+    transition: .3s ease-in-out;
+    width: 90%;
+    top: 90px;
+}
+.sidebar-area .inner-area {
+    height: 80vh;
+    overflow-y: scroll;
+}
+	.production-area h2 {
+    font-size: 18px;
+}
+	.buy-now {
+    margin-top: 20px;
+}
+	.similar-area h3 {
+    font-size: 21px;
+    margin: 24px 0 20px 0;
+}
+	.footer-bottom {
+    text-align: center;
+}
+	ul.footer-menu {
+    justify-content: center;
+}
+	.publication-box h3 {
+    font-size: 16px;
+}
+	.footer-logo-ection ul img {
+    width: 146px;
+}
+	.footer-logo-ection ul li p {
+    font-size: 15px;
+}
+	.nav-tabs .nav-link {
+    font-size: 14px;
+}
+	ul.listed-items li {
+    font-size: 16px;
+}
+	h5 {
+    font-size: 16px;
+}
+	ul#myTab1 li.nav-item {
+    flex: 50%;
+}
+	.infographic-sec h3 {
+    font-size: 16px;
+}
+	.infographic-sec table th {
+    padding: 10px 16px;
+    font-size: 13px;
+}
+	.infographic-sec table td {
+    padding: 10px 16px;
+    font-size: 13px;
+}
+	.ads-panel-right {
+    display: none;
+}
+	h3.panel-title {
+    font-size: 15px;
+}
+	.login-sec .form-group label {
+    margin: 0 0 8px 0;
+    font-size: 17px;
+}
+	.login-sec.contact-form .form-control {
+    font-size: 15px;
+}
+	.login-sec .form-control {
+    font-size: 16px;
+    padding: 12px 11px;
+}
+	.submit-btn {
+    padding: 11px 42px;
+}
+	.reset-btn {
+    padding: 11px 42px;
+}
+	.submit-btn i {
+    left: 14px;
+}
+	.reset-btn i {
+    left: 14px;
+}
+	.login-box {
+    margin: 15px auto 0 auto;
+}
+	.my-aac-part {
+    margin-top: 50px;
+}
+}
+
+
+@media only screen and (min-width:768px) and (max-width:991px) {
+	.hader-info {
+    margin-top: 24px;
+}
+	.stellarnav.mobile {
+    text-align: left;
+}
+	.stellarnav.mobile.right > ul {
+    z-index: 9999;
+}
+.stellarnav.mobile {
+text-align: right;
+}
+	.stellarnav > ul > li > a {
+    color: #000!important;
+}
+	a.menu-toggle {
+    padding: 0 !important;
+}
+	.banner-overlay h1 {
+    font-size: 21px;
+}
+	#BannerSlider .owl-prev {
+    top: 55px;
+}
+		#BannerSlider .owl-next {
+    top: 55px;
+}
+	.widget-thee-boxes {
+    margin-bottom: 30px;
+}
+	.middle-box-content {
+    height: auto;
+}
+	.publication-box {
+    margin-bottom: 30px;
+}
+		.right-panel {
+    margin-top: 0;
+    position: fixed;
+    top: 152px;
+    left: 0;
+    z-index: 9999;
+    width: 287px;
+}
+	h2.selection-title {
+    font-size: 12px;
+    padding: 14px 17px 14px 50px;
+    border-radius: 0 0 7px 7px;
+    cursor: pointer;
+    margin: 0;
+    position: absolute;
+    transform: rotate(-90deg);
+    left: -62px;
+}
+	.sidebar-area {
+    position: fixed;
+    width: 0;
+    right: 0;
+    transition: .3s ease-in-out;
+	overflow-y: scroll;
+}
+	.sidebar-area.active {
+    transition: .3s ease-in-out;
+    width: 95%;
+    top: 90px;
+}
+	.sidebar-area .inner-area
+	{
+		height: 350px;
+		overflow-y: scroll;
+	}
+	.nav-tabs .nav-link {
+    font-size: 15px;
+    padding: 11px 6px;
+}
+	.publication h2 {
+    font-size: 28px;
+}
+	.publication-box h3 {
+    font-size: 17px;
+}
+	ul#myTab1 li.nav-item a.nav-link img {
+    height: 38px;
+}
+	ul#myTab1 li.nav-item a.nav-link span {
+    font-size: 11px;
+}
+	.infographic-sec table th, .infographic-sec table td {
+    padding: 10px 12px;
+    font-size: 13px;
+}
+	.submit-btn, .reset-btn {
+    padding: 18px 75px;
+}
+	.login-box {
+    margin: 22px auto 0 auto;
+}
+	.my-aac-part {
+    margin-top: 48px;
+}
+}
+@media only screen and (min-width:992px) and (max-width:1199px) {
+.stellarnav > ul > li > a {
+    font-size: 14px;
+}
+	.widget-thee-boxes {
+    margin-bottom: 30px;
+}
+		.publication-box {
+    margin-bottom: 30px;
+}
+	.sidebar-area {
+    display: none;
+}
+	.sidebar-area.active {
+    display: block;
+}
+		.submit-btn, .reset-btn {
+    padding: 18px 80px;
+}
+}
+@media only screen and (min-width:1200px) and (max-width:1300px) {
+	
+		.sidebar-area {
+    display: none;
+}
+	.sidebar-area.active {
+    display: block;
+}
+	.home-three h2 {
+    font-size: 27px;
+}
+	.widget-thee-boxes h3 {
+    font-size: 19px;
+}
+	.widget-thee-boxes h5 {
+    font-size: 17px;
+}
+	.publication-box h3 {
+    font-size: 17px;
+}
+	.publication h2 {
+    font-size: 24px;
+}
+	.footer-logo-ection ul img {
+    width: 178px;
+}
+}
+
+
+@media only screen and (min-width:1400px){
+	
+	.widget-thee-boxes ul li {
+    font-size: 14px;
+    font-family: 'Open Sans';
+    font-weight: 700;
+}
+.widget-thee-boxes {
+    padding: 30px 35px;
+    min-height: 750px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+}
+
+}
+
+
+	
+/********************@media only screen and (min-width:1201px)********************/
+
+	
+
+/********************@media only screen and (min-width:1201px)********************/

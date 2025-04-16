@@ -1,0 +1,355 @@
+﻿@{
+    ViewData["Title"] = "Ticket Assignment";
+    Layout = "~/Views/Shared/_MainLayout3.cshtml";
+    var dataTable = ViewBag.dt as System.Data.DataTable;
+
+}
+
+<style>
+
+
+    label {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .three-body {
+        --uib-size: 35px;
+        --uib-speed: 0.8s;
+        --uib-color: #5D3FD3;
+        position: relative;
+        display: inline-block;
+        height: var(--uib-size);
+        width: var(--uib-size);
+        animation: spin78236 calc(var(--uib-speed) * 2.5) infinite linear;
+    }
+
+    .three-body__dot {
+        position: absolute;
+        height: 100%;
+        width: 70%;
+    }
+
+        .three-body__dot:after {
+            content: '';
+            position: absolute;
+            height: 0%;
+            width: 100%;
+            padding-bottom: 100%;
+            background-color: var(--uib-color);
+            border-radius: 50%;
+        }
+
+        .three-body__dot:nth-child(1) {
+            bottom: 5%;
+            left: 0;
+            transform: rotate(60deg);
+            transform-origin: 50% 85%;
+        }
+
+            .three-body__dot:nth-child(1)::after {
+                bottom: 0;
+                left: 0;
+                animation: wobble1 var(--uib-speed) infinite ease-in-out;
+                animation-delay: calc(var(--uib-speed) * -0.3);
+            }
+
+        .three-body__dot:nth-child(2) {
+            bottom: 5%;
+            right: 0;
+            transform: rotate(-60deg);
+            transform-origin: 50% 85%;
+        }
+
+            .three-body__dot:nth-child(2)::after {
+                bottom: 0;
+                left: 0;
+                animation: wobble1 var(--uib-speed) infinite calc(var(--uib-speed) * -0.15) ease-in-out;
+            }
+
+        .three-body__dot:nth-child(3) {
+            bottom: -5%;
+            left: 0;
+            transform: translateX(116.666%);
+        }
+
+            .three-body__dot:nth-child(3)::after {
+                top: 0;
+                left: 0;
+                animation: wobble2 var(--uib-speed) infinite ease-in-out;
+            }
+
+    @@keyframes spin78236 {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes wobble1 {
+        0%,
+        100% {
+            transform: translateY(0%) scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translateY(-66%) scale(0.65);
+            opacity: 0.8;
+        }
+    }
+
+    @@keyframes wobble2 {
+        0%,
+        100% {
+            transform: translateY(0%) scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translateY(66%) scale(0.65);
+            opacity: 0.8;
+        }
+    }
+
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark bg-white" id="exampleModalLongTitle">Schedhule Employee to Ticket</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+  <div class="row">
+
+                    <div class="col-md-12 mb-1">
+                        <label for="clientname">Ticket Number</label>
+                        <input type="text" id="tikitid" class="form-control mandatory" name="Client Representative Name" value="" disabled />
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label for="clientmobile">Enter Employee Code</label>
+                        <input type="text" id="empcode" onkeyup="getEmpName(this.value)" class="form-control mandatory" name="Client Representative Mobile" value="" />
+                    </div>
+                    <div class="three-body" id="loderid" style="     margin-inline-start: 222px;
+    margin-top: -41px;display:none
+
+">
+                        <div class="three-body__dot"></div>
+                        <div class="three-body__dot"></div>
+                        <div class="three-body__dot"></div>
+
+                    </div>
+                    <div class="col-md-12 mb-1" >
+                        <label for="clientemail">Employee Name</label>
+                        <input type="text" id="empname" class="form-control" name="Client Representative Email" disabled />
+                    </div>
+                    <div>
+                        <button id="btnsaveassign" type="button" onclick="updatestatus()" class="btn btn-dark w-10 mt-3 text-center">Assign</button>
+                        <button id="btnclose" type="button" data-dismiss="modal" class="btn btn-dark w-10 mt-3 text-center">Close </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<div class=" container-fluid" id="bdy">
+    <div class="card shadow mt-4">
+        <div class="card-header py-3">
+            <h6 id="header" class="m-0 font-weight-bold text-primary ">Ticket Assignment </h6>
+        </div><div class="row py-3 px-3">
+
+        <div class="col-md-4 mb-2">
+            <label for="companyname">Company Name</label>
+            <select id="companynameid" class="form-control" name="companyname" onchange="BindCustomer(this.value)">
+                
+                @if (ViewBag.companyname != null)
+                {
+                    foreach (var item in ViewBag.companyname as List<SelectListItem>)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="col-md-4 mb-2">
+            <label for="custmername">Customer Name</label>
+            <select id="custmernameid" class="form-control" name="custmernameid" onchange="BindSite(this.value)">
+                    <option value="All">All</option>
+
+            </select>
+        </div>
+
+        <div class="col-md-4 mb-2">
+            <label for="sitename">Site Name</label>
+            <select id="sitenameid" name="sitename" class="form-control">
+                    <option value="All">All</option>
+
+            </select>
+        </div>
+
+
+        
+        <div class="col-md-4 mb-2">
+            <label for="clientmobile">From Date</label>
+            <input type="date" id="fromdate" class="form-control mandatory" name="From Date" value="" placeholder="From Date" />
+        </div>
+
+
+
+        <div class="col-md-4 mb-2">
+            <label for="clientmobile">To Date</label>
+            <input type="date" id="todate" class="form-control mandatory" name="To Date" value="" placeholder="To Date" />
+        </div>
+
+        <div class="col-md-4 mb-2">
+                <label for="clientmobile">Ticket Number</label>
+            <input type="text" id="tikitno" class="form-control mandatory" name="Tikit Number" value=""  />
+        </div>
+
+
+
+        <div class="col-md-4 mb-2">
+                <label for="tickettype">Ticket Type</label>
+            <select id="tickettypeid" name="tickettype" class="form-control" onchange="Bindcate(this.value)">
+                    <option value="All">All</option>
+                @if (ViewBag.tickettypee != null)
+                {
+                    foreach (var item in ViewBag.tickettypee as List<SelectListItem>)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                }
+            </select>
+        </div>
+
+
+
+
+
+        <div class="col-md-4 mb-2">
+            <label for="category">Ticket Category</label>
+            <select id="categoryid" name="categoryid" class="form-control">
+                    <option value="All">All</option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="col-md-4 mb-2">
+            <label for="priority">Priority</label>
+            <select id="priorityid" name="priorityid" class="form-control">
+                    <option value="All">All</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+
+
+            </select>
+        </div>
+
+          
+            <div class="col-md-4 mb-2">
+                <label for="sitename">Ticket Status</label>
+                <select id="tikitstatus" name="sitename" class="form-control" >
+                 
+                    @if (ViewBag.ticketstatus != null)
+                    {
+                        foreach (var item in ViewBag.ticketstatus as List<SelectListItem>)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-4 mb-1" style="    margin-top: 4px;">
+                <button id="btnsave" type="button" onclick="BindTicketAssigndata()" class="btn btn-dark w-10 mt-3 text-center">View Ticket</button>
+            </div>
+
+
+           
+          @*   <div class="tikit" id="tikitdiv" style="display:none"> *@
+
+
+
+
+
+
+         
+       
+
+           
+
+
+    @*    </div> *@
+
+            <!-- Quotation Items Table -->
+            <div class="col-12 d-flex" id="itemsquotation">
+                <div class="card flex-grow-1 border-0 shadow">
+                    @* <div class="card-header text-white bg-primary">
+                        <h6 class="mb-0">Quotation Items</h6>
+                    </div> *@
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>Customer Name</th>
+                                        <th>Site Name</th>
+                                        <th>Ticket Number</th>
+                                        <th>Ticket Type</th>
+                                        <th>Ticket Catagorye </th>
+                                        <th>Ticket Discription</th>
+                                        <th>Ticket Priority</th>
+                                        <th>Ticket Creation Date</th>
+                                        <th>Ticket Creator</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="quotationTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+
+                      
+                    </div>
+                </div>
+
+                
+    </div>
+</div>
+</div>
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+<script src="~/js/AssignTicket.js"></script>
+<script src="~/js/Master.js"></script>
+
+<script>
+    $("#companynameid").select2();
+    $("#custmernameid").select2();
+    $("#sitenameid").select2();
+    $("#categoryid").select2();
+    $("#tickettypeid").select2();
+    $("#priorityid").select2();
+    $("#tikitstatus").select2();
+</script> 
+
+

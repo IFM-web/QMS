@@ -1,0 +1,182 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_MainLayout3.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+
+
+    .col-md-4 {
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .dashboard-box {
+        /* background: linear-gradient(135deg, #6a11cb, #2575fc); */
+        border-radius: 10px;
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .dashboard-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .dashboard-box i {
+            font-size: 4.5rem !important;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .dashboard-box h3 {
+            font-size: 1.2rem;
+            margin: 0;
+            padding: 10px 0;
+        }
+
+        .dashboard-box p {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+    @@media (max-width: 768px) {
+        .dashboard {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .dashboard {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<div class=" container-fluid" id="bdy">
+    <div class="card shadow mt-4">
+        <div class="card-header py-3">
+            <h6 id="header" class="m-0 font-weight-bold text-primary "> Dashboard</h6>
+        </div>
+        <div class="row py-3 px-3">
+            <div class="col-md-4">
+                <label for="companyname">Company Name</label>
+                <select id="companynameid" class="form-control" name="companyname" onchange="binddashboard()">
+                    <option value="All">All</option>
+                    @if (ViewBag.companyname != null)
+                    {
+                        foreach (var item in ViewBag.companyname as List<SelectListItem>)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="dashboard">
+                <div class="dashboard-box" style="background-color:#C62828;">
+                    <!-- Darker shade of #E57373 -->
+                    <i class="fas fa-ticket-alt" style="font-size:40px !important; color: #fff;"></i>
+                    <h3 style="color: #fff;">Total Ticket</h3>
+                    <p id="totaltikit" style="color: #fff;">0</p>
+                </div>
+
+                <a href="~/GenerateNewTicket">
+                <div class="dashboard-box" style="background: linear-gradient(45deg, #757575, #A1A1A1);">
+                   
+                    <!-- Darker shades of #BDBDBD and #E0E0E0 -->
+                    <i class="fas fa-plus-circle" style="font-size:40px !important; color: #fff;"></i>
+                    <h3 style="color: #fff;">New Ticket</h3>
+                    <p id="newtikit" style="color: #fff;">0</p>
+               
+                </div>
+                </a>
+                <div class="dashboard-box" style="background-color:#C62828;">
+                    <i class="fas fa-spinner" style="font-size:40px !important"></i>
+                    <h3>In Progress Ticket</h3>
+                    <p id="inprogress">0</p>
+                </div>
+                <a href="~/Quotation">
+                <div class="dashboard-box" style="background: linear-gradient(45deg, #757575, #A1A1A1);">
+                    <i class="fas fa-clipboard-list" style="font-size:40px !important"></i>
+                    <h3>Move For Quotation Ticket</h3>
+                    <p id="moviefor">0</p>
+                </div>
+                </a>
+                <div class="dashboard-box" style="background: linear-gradient(45deg, #757575, #A1A1A1);">
+                    <i class="fas fa-file-invoice" style="font-size:40px !important"></i>
+                    <h3>Quotation Prepared Ticket</h3>
+                    <p id="quatationprepeared">0</p>
+                </div>
+                @* <a href="~/ItemsList">
+                <div class="dashboard-box" style="background-color:#C62828;">
+                    <i class="fas fa-check-circle" style="font-size:40px !important"></i>
+                    <h3>Quotation Approved Ticket</h3>
+                    <p id="quatationapprove">0</p>
+                </div>
+                </a> *@
+                <a href="~/Dashboard/dashboardapproved">
+                    <div class="dashboard-box" style="background: linear-gradient(45deg, #757575, #A1A1A1);">
+                        <i class="fas fa-check-circle" style="font-size:40px !important"></i>
+                        <h3> Quotation Approved Ticket</h3>
+                        <p id="quatationapprove">0</p>
+                    </div>
+                </a>
+
+                <a href="~/ItemsList">
+                    <div class="dashboard-box" style="background-color:#C62828;">
+                    <i class="fas fa-eye" style="font-size:40px; color:white !important"></i>
+                    <h3>Quotation Reviewed Ticket</h3>
+                    <p id="quatationreviewd">0</p>
+                </div>
+                </a>
+                <a href="~/Home/ticketclosure">
+                <div class="dashboard-box" style="background-color:#C62828;">
+                    <i class="fas fa-times-circle" style="font-size:40px !important"></i>
+                    <h3>Closed Ticket</h3>
+                    <p id="close">0</p>
+                </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+
+<script src="~/js/Dashboardmain.js"></script>
+<script src="~/js/Master.js"></script>
+
+<script>
+    $("#companynameid").select2();
+
+</script>
+

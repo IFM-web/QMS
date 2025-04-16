@@ -1,0 +1,252 @@
+﻿@{
+    ViewData["Title"] = "Generate New Ticket";
+    Layout = "~/Views/Shared/_MainLayout3.cshtml";
+    var dataTable = ViewBag.dt as System.Data.DataTable;
+
+}
+<style>
+
+
+    label {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .three-body {
+        --uib-size: 35px;
+        --uib-speed: 0.8s;
+        --uib-color: #5D3FD3;
+        position: relative;
+        display: inline-block;
+        height: var(--uib-size);
+        width: var(--uib-size);
+        animation: spin78236 calc(var(--uib-speed) * 2.5) infinite linear;
+    }
+
+    .three-body__dot {
+        position: absolute;
+        height: 100%;
+        width: 70%;
+    }
+
+        .three-body__dot:after {
+            content: '';
+            position: absolute;
+            height: 0%;
+            width: 100%;
+            padding-bottom: 100%;
+            background-color: var(--uib-color);
+            border-radius: 50%;
+        }
+
+        .three-body__dot:nth-child(1) {
+            bottom: 5%;
+            left: 0;
+            transform: rotate(60deg);
+            transform-origin: 50% 85%;
+        }
+
+            .three-body__dot:nth-child(1)::after {
+                bottom: 0;
+                left: 0;
+                animation: wobble1 var(--uib-speed) infinite ease-in-out;
+                animation-delay: calc(var(--uib-speed) * -0.3);
+            }
+
+        .three-body__dot:nth-child(2) {
+            bottom: 5%;
+            right: 0;
+            transform: rotate(-60deg);
+            transform-origin: 50% 85%;
+        }
+
+            .three-body__dot:nth-child(2)::after {
+                bottom: 0;
+                left: 0;
+                animation: wobble1 var(--uib-speed) infinite calc(var(--uib-speed) * -0.15) ease-in-out;
+            }
+
+        .three-body__dot:nth-child(3) {
+            bottom: -5%;
+            left: 0;
+            transform: translateX(116.666%);
+        }
+
+            .three-body__dot:nth-child(3)::after {
+                top: 0;
+                left: 0;
+                animation: wobble2 var(--uib-speed) infinite ease-in-out;
+            }
+
+    @@keyframes spin78236 {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes wobble1 {
+        0%,
+        100% {
+            transform: translateY(0%) scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translateY(-66%) scale(0.65);
+            opacity: 0.8;
+        }
+    }
+
+    @@keyframes wobble2 {
+        0%,
+        100% {
+            transform: translateY(0%) scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: translateY(66%) scale(0.65);
+            opacity: 0.8;
+        }
+    }
+
+</style>
+<div class=" container-fluid" id="bdy">
+    <div class="card shadow mt-4">
+        <div class="card-header py-3">
+            <h6 id="header" class="m-0 font-weight-bold text-primary "> Generate New Ticket</h6>
+        </div>
+        <div class="row py-3 px-3">
+            <div class="col-md-4 mb-2">
+                <div class="form-group">
+                    <label for="companyname">Company Name</label>
+                <select id="companynameid" class="form-control mandatory" name="Company Name" onchange="BindCustomer(this.value)">
+                    <option value="0">select</option>
+                    @if (ViewBag.companyname != null)
+                    {
+                        foreach (var item in ViewBag.companyname as List<SelectListItem>)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+            </div>
+    
+            <div class="col-md-4 mb-2">
+                <div class="form-group">              
+                    <label for="custmername"> Customer Name  </label>
+                <select id="custmernameid" class="form-control mandatory" name="Customer Name" onchange="BindSite(this.value)">
+                    <option value="0">select</option>
+                   
+                </select>
+                </div>
+
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="form-group">
+                    <label for="sitename">Site Name</label>
+                <select id="sitenameid" name="Site Name" class="form-control mandatory">
+                    <option value="0">select</option>
+                    
+                </select>
+            </div>
+            </div>
+        
+          
+            <div class="col-md-4 mb-2">
+                <div class="form-group">
+                    <label for="tickettype">Ticket Type</label>
+                <select id="tickettypeid" name="Ticket Type" class="form-control mandatory" onchange="Bindcate(this.value)">
+                    <option value="0">select</option>
+                    @if (ViewBag.tickettypee != null)
+                    {
+                        foreach (var item in ViewBag.tickettypee as List<SelectListItem>)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+            </div>
+
+
+
+
+
+            <div class="col-md-4 mb-2">
+                <label for="category">Ticket Category</label>
+                <select id="categoryid" name="Ticket Category" class="form-control mandatory">
+                    <option value="0">select</option>
+                    
+                </select>
+       
+            </div>
+          <div class="col-md-4 mb-2">
+                <label for="ticketdiscriptionid">Ticket Description</label>
+                <textarea id="ticketdiscriptionid" name="Ticket Description" placeholder="Enter Ticket Discription" class="form-control mandatory" rows="1"></textarea>
+            </div>
+
+            <div class="col-md-4 mb-2">
+                <label for="priority">Priority</label>
+                <select id="priorityid" name="Priority" class="form-control mandatory">
+                    <option value="0">select</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+
+                 
+                </select>
+            </div>
+            <br />
+            <div class="col-md-4 mb-2">
+                <label for="clientname">Client Representative Name</label>
+                <input type="text" id="clientnameid" class="form-control mandatory " name="Client Representative Name" value="" placeholder="Enter Client Representative Name" />
+            </div>
+            <div class="col-md-4 mb-2">
+                <label for="clientmobile">Client Representative Mobile</label>
+                <input type="text" id="clientmobileid" class="form-control " name="Client Representative Mobile" value="" placeholder="Enter Client Representative Mobile" />
+            </div>
+            <div class="col-md-4 mb-2">
+                <label for="clientemail">Client Representative Email</label>
+                <input type="text" id="clientemailid" class="form-control mandatory " name="Client Representative Email" placeholder="Enter Client Representative Email" />
+            </div>
+            <div mb-4 >
+                <button id="btnsave" type="button" onclick="SaveData()" class="btn btn-dark w-10 mt-3 text-center">Submit</button>
+            </div>
+
+        </div>
+      
+        <div class="three-body" id="loderid" style="    margin-inline-start: 571px;
+    margin-top: -97px;display:none
+
+">
+            <div class="three-body__dot"></div>
+            <div class="three-body__dot"></div>
+            <div class="three-body__dot"></div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+<script src="~/js/Ticketgenerate.js"></script>
+<script src="~/js/Master.js"></script>
+
+<script>
+    $("#companynameid").select2();
+    $("#custmernameid").select2();
+    $("#sitenameid").select2();
+    $("#categoryid").select2();
+    $("#tickettypeid").select2();
+    $("#priorityid").select2();
+</script>
+
+

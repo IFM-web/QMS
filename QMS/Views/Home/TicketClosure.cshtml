@@ -1,0 +1,308 @@
+﻿@{
+    ViewData["Title"] = "Ticket Closure";
+    Layout = "~/Views/Shared/_MainLayout3.cshtml";
+}
+
+
+<style>
+
+
+
+    .ticket-container {
+        border: 1px solid black;
+        padding: 10px;
+    }
+
+    .narrow-table {
+        width: 80%;
+    }
+
+    .narrow-table1 {
+        width: 50%;
+    }
+
+    /* .card-header {
+            background-color: #C62828;
+            color: white;
+        } */
+
+</style>
+
+
+@*
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"> *@
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+<div class=" container-fluid" id="bdy">
+    <div class="card shadow mt-4" style="">
+        <div class="card-header py-3">
+            <h6 id="header" class="m-0 font-weight-bold text-primary ">Ticket Closure</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+
+                <div class="col-md-4 mb-2">
+                    <label for="ticket" class="form-label">Ticket Number</label>
+                    <select id="tickitnoid" class="form-control" name="tickitnoid" onchange="TicketClosureBind(this.value)">
+                        <option value="0">select</option>
+                        @if (ViewBag.tickit != null)
+                        {
+                            foreach (var item in ViewBag.tickit as List<SelectListItem>)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4 mb-2" style="    margin-top: 24px;">
+                    <button type="button" id="generatePDF" class="btn btn-dark ">Create Pdf</button>
+                </div>
+                <div class="col-12 d-flex" id="ticketdetails">
+
+                    <!-- Ticket Details Section -->
+                    <div class="card mb-4 px-md-0 flex-grow-1 border-0 ">
+
+
+                        <div class="row mb-3 ticket-container m-3">
+
+
+                            <div class="row mb-3 signature-container justify-content-center text-center">
+                                <img id="Clogo" src="~/groupl.jfif" alt="GroupL Logo" style="height: 150px; width: 250px;">
+                            </div>
+                            <div class="col-12 d-flex px-md-0">
+                                <div class="card flex-grow-1 border-0 ">
+                                    <div class="card-header text-white  bg-danger">
+                                        <h6 class="mb-0"> Ticket Details</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 px-md-0">
+                                    <label for="observation" class="form-label" style="font-weight:bold">Customer Name :<br /> </label><span id="CustomerName"></span>
+                                </div>
+                                <div class="col-md-4 px-md-0" style="margin-left: 10px;">
+                                    <label for="requirmentid" class="form-label" style="font-weight:bold">Site Name : <br /></label><span id="siteName"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 px-md-0">
+                                <label for="descriptionid" class="form-label" style="font-weight:bold">Ticket Description : <br /> </label><span id="ticktdescription"></span>
+                            </div>
+
+
+                            <div class="col-md-4 px-md-0">
+                                <label for="customerName" class="form-label" style="font-weight:bold">Ticket Number : <br /> </label><span id="ticktno"></span>
+                            </div>
+
+                            <div class="col-md-4 px-md-0">
+                                <label for="tickitdateid" class="form-label" style="font-weight:bold">Ticket Generation  Date : <br /></label> <span id="ticktdate"></span>
+                            </div>
+
+
+
+
+
+                            <div class="col-12 d-flex px-md-0" id="itemsExecution">
+                                <div class="card flex-grow-1 border-0 ">
+                                    <div class="card-header text-white  bg-danger">
+                                        <h6 class="mb-0">Execution Details</h6>
+                                    </div>
+                                    <div class="card-body p-md-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped narrow-table">
+                                                <thead>
+                                                    <tr>
+                                                        @*  <th>S.No</th> *@
+                                                        <th>Ticket Observation</th>
+                                                        <th>Ticket Description</th>
+                                                        <th>Technician  Name</th>
+                                                        @*  <th>Qty</th>
+                                                        <th>Unit</th>
+                                                        <th>Rate</th>
+                                                        <th>Gross Amount</th>
+                                                        <th>Action</th> *@
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="ExecutionTableBody">
+                                                    <tr id="tr" style="display:none">
+                                                        @* <td id="th1" ></td> *@
+                                                        <td id="th2"></td>
+                                                        <td id="th3"></td>
+                                                        <td id="th4"></td>
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <div class="text-right mt-3" id="tiiik1" style="display:none">
+                                                <div class="signature-box">
+                                                    <img id="tikit1image" src="../QuotationPDF/download1.png" alt="Ticket Signature" style=" height: 124px;
+    width: 194px;
+    margin-top: -101px;">
+                                                </div>
+                                                <p style="margin-right: 43px">Before Image </p>
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                            <div class="col-12 d-flex px-md-0" id="itemsquotayytion" style="display: none !important; ">
+                                <div class="card flex-grow-1 border-0 ">
+                                    @*  <div class="card-header text-white  bg-danger">
+                                    <h6 class="mb-0">Quotation Items</h6>
+                                    </div> *@
+                                    <div class="card-body p-md-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped narrow-table1" style="width: 100% ">
+                                                <thead>
+                                                    <tr>
+                                                        <th>S.No</th>
+                                                        <th>Item Code</th>
+                                                        <th>Item Name</th>
+                                                        <th>GST</th>
+                                                        <th>Qty</th>
+                                                        <th>Unit</th>
+                                                        <th>Rate</th>
+                                                        <th>Gross Amount</th>
+                                                        <th style="display:none">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="quotationTableBoddy">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-12 d-flex px-md-0" id="itemsClosure">
+                                <div class="card flex-grow-1 border-0">
+                                    <div class="card-header text-white bg-danger">
+                                        <h6 class="mb-0">Closure Details</h6>
+                                    </div>
+                                    <div class="card-body p-md-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped narrow-table">
+                                                <thead>
+                                                    <tr>
+                                                        @*  <th>S.No</th> *@
+                                                        <th>Ticket Closure Date</th>
+                                                        <th style="display:none">Ticket Closure Sign</th>
+                                                        <th>Ticket Closure Remarks</th>
+
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="ClosureTableBody">
+                                                    <!-- Dynamic rows -->
+
+
+                                                </tbody>
+
+                                            </table>
+
+                                            <div class="text-right mt-3" id="divclosutre" style="display:none">
+                                                <img id="Clouserimage" src="../QuotationPDF/download1.png" alt="Ticket Signature"
+                                                     style="
+    height: 118px;
+    width: 194px;
+    margin-top: -93px;"> <p style="margin-right: 43px;">Ticket Closure Image</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="d-flex mt-5">
+                                <div class="row mb-3 signature-container justify-content-center text-center">
+                                    <!-- Staff Signature -->
+                                    <div class="col-md-3" style="border: 1px solid #000; padding: 10px;">
+                                        <div class="signature-box mx-auto" width="350px">
+                                            <img id="staffSignature" src="" style="width: -webkit-fill-available" alt="Staff Signature">
+                                        </div>
+                                        <div class="signature-label text-center" style="margin-top: 5px;">Closure Staff Signature </div>
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                    <!-- Client Signature -->
+                                    <div class="col-md-4" style="border: 1px solid #000; padding: 10px; ">
+                                        <div class="signature-box mx-auto" width="350px">
+                                            <img id="clientSignature" style="width: -webkit-fill-available" alt="Client Signature">
+                                        </div>
+                                        <div class="signature-label text-center" style="margin-top: 5px;">Ticket Closure Client Signature</div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+<script defer src="~/js/TicketCloser.js"></script>
+<script defer src="~/js/Master.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script type="text/javascript">
+    $("#tickitnoid").select2();
+  
+    document.getElementById('generatePDF').addEventListener('click', () => {
+        let ticketno = $("#tickitnoid").val();
+   
+        const element = document.getElementById('ticketdetails');
+        html2canvas(element).then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+            const imgWidth = 210; // A4 width in mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            pdf.save(ticketno+'.pdf');
+        });
+    });
+
+
+</script>
+
+
+
+
