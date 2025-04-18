@@ -114,7 +114,7 @@
 <div class=" container-fluid" id="bdy">
     <div class="card shadow mt-4">
         <div class="card-header py-3">
-            <h6 id="header" class="m-0 font-weight-bold text-primary ">View ApprovebyVendor</h6>
+            <h6 id="header" class="m-0 font-weight-bold text-primary ">Vendor Ticket Status</h6>
         </div>   <br />
          
         <div class="row px-3">
@@ -154,11 +154,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
-
-                <button type="button" onclick="ApproveandReview('Approved')" class="btn btn-dark m-2" style="width:46%">Approve Quotation</button>
-                <button type="button" onclick="ApproveandReview('Reviewed')" class="btn btn-dark m-2" style="width:46%">Review Quotation</button>
-            </div>
+           
 
 
         </div>
@@ -168,11 +164,16 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h6 class="modal-title">Modal title</h6>
+                <h6 class="modal-title">Quotation Item List</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="closemodel()" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="modal-body">
                 
+            </div>
+            <div class="col-md-6">
+
+                <button type="button" onclick="ApproveandReview('Approved')" class="btn btn-dark m-2" style="width:46%">Approve Quotation</button>
+                <button type="button" onclick="ApproveandReview('Reviewed')" class="btn btn-dark m-2" style="width:46%">Review Quotation</button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closemodel()" >Close</button>

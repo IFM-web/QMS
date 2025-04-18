@@ -42,7 +42,7 @@ namespace QMS.Controllers
         public IActionResult ItemsList()
         {
 
-            ViewBag.tickit = util.PopulateDropDown("select MannualTicketNo ,MannualTicketNo from GroupLNewAppTicketMaster where Status='Quotation Submitted by Vendor'", util.strElect);
+            ViewBag.tickit = util.PopulateDropDown("select MannualTicketNo ,MannualTicketNo from GroupLNewAppTicketMaster where Status='Quotation Prepared'", util.strElect);
 
             var ds = util.Fill("select * from AddQoutaion", util.strElect);
             ViewBag.dt = ds.Tables[0];
