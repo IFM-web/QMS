@@ -70,5 +70,7 @@ namespace ifm360Reports.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login", "Home");
         }
+
+
     }
 }

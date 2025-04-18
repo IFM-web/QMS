@@ -31,8 +31,34 @@
         margin-top: 30px;
     }
 
+
     .dashboard-box {
-        /* background: linear-gradient(135deg, #6a11cb, #2575fc); */
+        width: 200px; /* Fixed width */
+        height: 200px; /* Same height for square shape */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 10px;
+        color: white;
+        font-weight: 500;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin: 10px;
+    }
+    /*  .dashboard-box {
+    
+        border-radius: 10px;
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }  */
+
+    .dashboard-box {
+        aspect-ratio: 1 / 1; /* Makes it square */
+        width: 100%;
+        max-width: 300px;
         border-radius: 10px;
         color: #fff;
         text-align: center;
@@ -140,7 +166,7 @@
                 </div>
                 </a> *@
                 <a href="~/Dashboard/dashboardapproved">
-                    <div class="dashboard-box" style="background: linear-gradient(45deg, #757575, #A1A1A1);">
+                    <div class="dashboard-box" style="background-color:#C62828;">
                         <i class="fas fa-check-circle" style="font-size:40px !important"></i>
                         <h3> Quotation Approved Ticket</h3>
                         <p id="quatationapprove">0</p>
@@ -148,7 +174,7 @@
                 </a>
 
                 <a href="~/ItemsList">
-                    <div class="dashboard-box" style="background-color:#C62828;">
+                    <div class="dashboard-box" style="background: linear-gradient(45deg, #757575, #A1A1A1);">
                     <i class="fas fa-eye" style="font-size:40px; color:white !important"></i>
                     <h3>Quotation Reviewed Ticket</h3>
                     <p id="quatationreviewd">0</p>

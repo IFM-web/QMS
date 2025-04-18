@@ -4,7 +4,28 @@
     var dt = ViewBag.dt as System.Data.DataTable;
     int count = 1;
 }
+<style>
 
+    #fullscreen-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.7); /* optional: light overlay */
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .spinner-big {
+        width: 4rem;
+        height: 4rem;
+        border-width: 0.5em;
+    }
+
+</style>
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
 <div class=" container-fluid" id="bdy">
@@ -15,6 +36,12 @@
         <div class="card-body">
             <input hidden id="TicketNo" name="name" value="@ViewBag.TicketNo" />
             <div class="row">
+                <div id="fullscreen-loader" class="d-none" >
+                    <div class="spinner-border text-primary spinner-big" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+
 
 
                 <div class="table-responsive mt-2">

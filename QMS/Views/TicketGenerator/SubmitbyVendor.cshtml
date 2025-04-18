@@ -56,12 +56,12 @@
                             <td>@row["ItemName"]</td>
                             <td>@row["ItemUnit"]</td>
                             <td>
-                                    <input type="text" value="@row["ItemRate"]" id="rate" class="rate-input" oninput="changeamt(this.value)" />
+                                    <input type="text" value="" id="rate" class="rate-input" oninput="changeamt(this)" />
 
                             </td>
-                            <td id="qty">@row["ItemQty"]</td>
-                            <td id="totalamt">
-                                 @((Convert.ToInt32(row["ItemQty"]) * Convert.ToDecimal(row["ItemRate"] ?? 0)))
+                            <td class="qty">@row["ItemQty"]</td>
+                            <td class="totalamt">
+                               
                             </td>
                         </tr>
                         count++;
@@ -77,7 +77,7 @@
 else{
         <div class="container mt-4">
             <div class="alert alert-info text-center">
-                <strong>You Have Already Submitted Update Items.</strong>
+                <strong>You Have Been Submitted Update Items.</strong>
             </div>
         </div>
 }

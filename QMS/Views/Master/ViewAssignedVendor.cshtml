@@ -110,11 +110,33 @@
         }
     }
 
+
+
+    #fullscreen-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.7); /* optional: light overlay */
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .spinner-big {
+        width: 4rem;
+        height: 4rem;
+        border-width: 0.5em;
+    }
+
+
 </style>
 <div class=" container-fluid" id="bdy">
     <div class="card shadow mt-4">
         <div class="card-header py-3">
-            <h6 id="header" class="m-0 font-weight-bold text-primary ">View ApprovebyVendor</h6>
+            <h6 id="header" class="m-0 font-weight-bold text-primary ">Vendor Ticket Status</h6>
         </div>   <br />
          
         <div class="row px-3">
@@ -122,7 +144,7 @@
             <div class="col-md-4 mb-2">
                 <label for="ticket" class="form-label">Select Ticket</label>
                 <select id="tickitnoid" class="form-control" name="tickitnoid" onchange="GetVendorAssigneddetails()">
-                    <option value="All">All</option>
+                    <option value="0">All</option>
 
                     @if (ViewBag.tickit != null)
                     {
@@ -136,7 +158,7 @@
             <div class="col-md-4 mb-2">
                 <label for="ticket" class="form-label">Select Vendor</label>
                 <select id="vendor" class="form-control" name="vendor" onchange="GetVendorAssigneddetails()">
-                    <option value="All">All</option>
+                    <option value="0">All</option>
 
                     @if (ViewBag.vendor != null)
                     {
@@ -154,11 +176,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
-
-                <button type="button" onclick="ApproveandReview('Approved')" class="btn btn-dark m-2" style="width:46%">Approve Quotation</button>
-                <button type="button" onclick="ApproveandReview('Reviewed')" class="btn btn-dark m-2" style="width:46%">Review Quotation</button>
-            </div>
+           
 
 
         </div>
@@ -168,11 +186,17 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h6 class="modal-title">Modal title</h6>
+                <h6 class="modal-title">Quotation Item List</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="closemodel()" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="modal-body">
                 
+            </div>
+            <input type="hidden" id="selectticketno"/>
+            <div class="col-md-6">
+
+                <button type="button" onclick="ApproveandReview1('Vendor Approved')" class="btn btn-dark m-2" style="width:46%">Approve Quotation</button>
+                <button type="button" onclick="sendMailReview1('Review Pending from Vendor')" class="btn btn-dark m-2" style="width:46%">Review Quotation</button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closemodel()" >Close</button>
@@ -182,6 +206,12 @@
     </div>
 </div>
 
+
+<div id="fullscreen-loader" class="d-none">
+    <div class="spinner-border text-primary spinner-big" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
 
 
 
@@ -201,17 +231,33 @@
     $("#tickitnoid").select2();
     $("#vendor").select2();
 
+    $(document).ready(() => {
+        GetVendorAssigneddetails()
+    });
+
+
+    function getURL() {
+        const hostname = window.location.hostname;
+        if (hostname == "localhost") {
+            return '';
+        }
+        else {
+            return '/Ticketing';
+        }
+
+    };
+    var myurl = getURL();
     function closemodel (){
         $("#mymodel").hide();
     }
     function GetVendorAssigneddetails(){
-
+       var  tickitno= $("#tickitnoid").val()
         $.ajax({
-            url: '/Ticketing/Master/GetAssignedVendor',
+            url: myurl + '/Master/GetAssignedVendor',
 
             type: 'Get',
             data: {
-                tickitno: $("#tickitnoid").val(),
+                    tickitno: tickitno,
                 vendor: $("#vendor").val()
 
             },
@@ -221,6 +267,7 @@
                 data = JSON.parse(data);
                 console.log(data)
                 if (data.length > 0) {
+                     
                     CreateTableFromArray(data, 'printdiv')
                 }
              
@@ -267,7 +314,7 @@
             th.setAttribute('style',
                 'font:18px Calibri;border: solid 1px #DDD;' +
                 'border-collapse: collapse; font-weight:bold;' +
-                'padding: 2px 3px; text-align: center;' +
+                'padding: 2px 3px; text-align:center ;' +
                 'display:' + result + ';'
             );
         }
@@ -283,7 +330,7 @@
                 tabCell.setAttribute('style',
                     'font:18px Calibri;border: solid 1px #DDD;' +
                     'border-collapse: collapse; ' +
-                    'padding: 2px 3px; text-align: center;' +
+                    'padding: 2px 3px; text-align: ;' +
                     'display:' + result + ';'
                 );
                 tabCell.setAttribute('class', "" + col[j].replace(" ", "").replace(" ", "") + "");
@@ -331,7 +378,7 @@
     function viewmodel(id) {
 
         $.ajax({
-            url: '/Ticketing/Master/GetItem',
+            url: myurl+'/Master/GetItem',
 
             type: 'Get',
             data: {
@@ -340,11 +387,13 @@
 
             },
             success: function (data) {
+
                 $("#mymodel").show();
                 $("#modal-body").empty();
                 data = JSON.parse(data);
                 console.log(data)
                 if (data.length > 0) {
+                    $("#selectticketno").val(id)
                     CreateTableFromArray(data, 'modal-body')
                 }
 
@@ -362,7 +411,83 @@
         });
 
     }
+    function ApproveandReview1(id) {
+        $("#mymodel").hide();
+        $("#fullscreen-loader").removeClass("d-none");
+        var tickitnoid = $('#selectticketno').val();
+        //var htmldata= retundhtml(tickitnoid)
+
+        $.ajax({
+            url: myurl + '/QMS/ApprovedAndReview1',
+
+            type: 'post',
+            data: {
+                ticketno: tickitnoid,
+                type: id,
+
+            },
+            success: function (data) {
+                $("#fullscreen-loader").addClass("d-none");
+                Swal.fire({
+                    title: "success",
+                    html: data.message,
+                    icon: "success",
+                    confirmButtonText: 'OK'
+                }).then(function () {
+                    location.reload();
+                });
+            },
+            error: function (data) {
+                $("#fullscreen-loader").addClass("d-none");
+                var data = {
+                    status: "Error",
+                    msg: "Error on server.",
+                    data: [],
+                }
+
+            },
+        });
+    }
+    function sendMailReview1(id) {
+        $("#mymodel").hide();
     
+        $("#fullscreen-loader").removeClass("d-none");
+        var tickitnoid = $('#selectticketno').val();
+        //var htmldata= retundhtml(tickitnoid)
+
+        $.ajax({
+            url: myurl + '/QMS/ReviewToMail',
+
+            type: 'post',
+            data: {
+                ticketno: tickitnoid,
+                type: id,
+
+            },
+            success: function (data) {
+
+                $("#fullscreen-loader").addClass("d-none");
+                Swal.fire({
+                    title: "success",
+                    html: data.message,
+                    icon: "success",
+                    confirmButtonText: 'OK'
+                }).then(function () {
+                    location.reload();
+                });
+            },
+            error: function (data) {
+
+                $("#fullscreen-loader").addClass("d-none");
+                var data = {
+                    status: "Error",
+                    msg: "Error on server.",
+                    data: [],
+                }
+
+            },
+        });
+    }
 
 
 </script>

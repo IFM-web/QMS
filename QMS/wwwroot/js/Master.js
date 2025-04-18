@@ -40,6 +40,7 @@ function Validation() {
             msg += "Enter Valid " + name + "!!\n";
         }
     });
+ 
     return msg;
 }
 

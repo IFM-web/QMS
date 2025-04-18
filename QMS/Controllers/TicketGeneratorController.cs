@@ -16,6 +16,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 
 namespace QMS.Controllers
@@ -678,6 +679,45 @@ Thank you for your Business<b></div>
 
 
 
+
+        [Route("QMS/ReviewToMail")]
+        public JsonResult ReviewToMail(string type, string ticketno)
+        {
+
+            var st = "Quotation " + type.Replace("'", "");
+            var data = "";
+
+            var ds = util.Fill("select b.Name,b.Email from GroupLNewAppTicketMaster a join VendorMaster b on a.VendorId=b.Id where MannualTicketNo='" + ticketno + "' ", util.strElect);
+
+            string Name = ds.Tables[0].Rows[0][0].ToString();
+            string Email = ds.Tables[0].Rows[0][1].ToString();
+            string tbody = $@"<p>Dear {Name},</p>
+
+<p>We kindly request you to Review Quotation for <strong>Group L</strong>.</p>
+
+<p>Please click the button below to access the quotation page:</p>
+
+<p>
+  <a href=""https://ifm360.in/Ticketing/TicketGenerator/ReviewedVendorItem/?ticketno={ticketno}"" style=""display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;"">
+                Review Quotation
+  </a>
+</p>
+
+
+<p>Best regards,<br>GroupL Team</p>";
+
+            var MailStatus = Cls_util.SendMailViaIIS_htmls("serviceexcellence@groupl.in", Email, "", "", "Review Quotation", tbody, "qglnwhqumptscpgf", "smtp.gmail.com", "");
+
+            data = util.execQuery("Update GroupLNewAppTicketMaster set status='Review Quotation Pending from Vendor'  where MannualTicketNo='" + ticketno + "' ", util.strElect);
+
+
+            return Json(new { message = "Quotation Sent To Vendor For Review" });
+
+
+        }
+
+
+
         [Route("QMS/Quotationexecute")]
         public JsonResult Quotationexecute(string type, string ticketno)
 
@@ -733,8 +773,6 @@ Thank you for your Business<b></div>
             var data = JsonConvert.SerializeObject(dt);
             return Json(data);
         }
-
-
 
     //    var dt = ds.Tables[0];
     //    var data = JsonConvert.SerializeObject(dt);
@@ -846,7 +884,7 @@ Thank you for your Business<b></div>
        
         public IActionResult SubmitbyVendor(string ticketno)
         {
-            var ds = util.Fill("select Id,ItemCode,ItemName,ItemUnit,ItemRate,ItemQty from AddQoutaion a join GroupLNewAppTicketMaster b on a.TicketNo=b.MannualTicketNo where Status='Executed by Vendor' and TicketNo='"+ ticketno + "'", util.strElect);
+            var ds = util.Fill("select Id,ItemCode,ItemName,ItemUnit,isnull(ItemRate,'0')ItemRate,isnull(ItemQty,0)ItemQty from AddQoutaion a join GroupLNewAppTicketMaster b on a.TicketNo=b.MannualTicketNo where Status='Executed by Vendor' and TicketNo='" + ticketno + "'", util.strElect);
             ViewBag.dt = ds.Tables[0];
             ViewBag.ticketNo = ticketno;
             return View("SubmitbyVendor");
@@ -870,20 +908,178 @@ Thank you for your Business<b></div>
             }
             return Json(JsonConvert.SerializeObject(msg));
         }
-
-
-       
-           
-
-
-
-
-
+        [HttpPost]
+        public JsonResult UpdatebyVendorReview()
+        {
+            string JsonData = Request.Form["JsonData"].ToString();
+            string ticketNO = Request.Form["ticketNO"].ToString();
+            string msg = "";
+            var obj = JArray.Parse(JsonData);
+            foreach (var item in obj)
+            {
+                 msg = util.execQuery("Update AddQoutaion set ItemRate='" + item["rate"] + "',GrossAmt='" + item["toatal"] +"' where  Id='" + item["Id"] + "' ", util.strElect);
+            }
+            if (msg == "Successfull")
+            {
+               msg= util.execQuery("update GroupLNewAppTicketMaster set Status='Reviewed Quotation Submitted by Vendor' where MannualTicketNo='"+ticketNO+"' ", util.strElect);
+            }
+            return Json(JsonConvert.SerializeObject(msg));
+        }
 
 
         #endregion
 
 
+        public IActionResult ReviewedVendorItem(string ticketno)
+        {
+            var ds = util.Fill("select Id,ItemCode,ItemName,ItemUnit,isnull(ItemRate,'0')ItemRate,isnull(ItemQty,0)ItemQty,GrossAmt from AddQoutaion a join GroupLNewAppTicketMaster b on a.TicketNo=b.MannualTicketNo where Status='Review Quotation Pending from Vendor' and TicketNo='" + ticketno + "'", util.strElect);
+            ViewBag.dt = ds.Tables[0];
+            ViewBag.ticketNo = ticketno;
+            return View();
+        }
+
+
+        public JsonResult AssigntoVendor(string ticketNO)
+        {
+            DataTable dt = new DataTable();
+            DataTable dt2 = new DataTable();
+
+            string sqlquery = "select * from AddQoutaion where  TicketNo='" + ticketNO + "' ";
+            string sqlquery2 = "exec udp_GetTicketGeneraterDetails @TicketNo='" + ticketNO + "' ";
+
+            DataSet ds = util.Fill(sqlquery, util.strElect);
+            DataSet ds2 = util.Fill(sqlquery2, util.strElect);
+            dt = ds.Tables[0];
+            dt2 = ds2.Tables[0];
+
+            var ds3 = util.Fill("select b.Name,b.Email,a.Observation,a.Description from GroupLNewAppTicketMaster a join VendorMaster b on a.VendorId=b.Id where MannualTicketNo='" + ticketNO + "' ", util.strElect);
+
+            //string Name = ds3.Tables[0].Rows[0][0].ToString();
+            string Email = ds3.Tables[0].Rows[0][1].ToString();
+            string Observation = ds3.Tables[0].Rows[0][2].ToString();
+            string Description = ds3.Tables[0].Rows[0][3].ToString();
+
+            double total = 0;
+
+            string htmldesign = $@"
+    <!DOCTYPE html>
+    <html lang=""en"">
+    <head>
+        <meta charset=""UTF-8"">
+        <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+        <title>Quotation</title>
+    </head>
+    <body style=""font-family: Arial, sans-serif; margin: 40px; padding: 0;"">
+        <!-- Logo and Header -->
+        <div style=""text-align: center; margin-bottom: 0px;"">
+            <img src=""https://ifm360.in/grouplreportingportal/grouplreportingportal/GroupL.jfif"" alt=""Group L Logo"" style=""max-width: 150px;"">
+        </div>
+        <h2 style=""text-align: center; margin: 10px 0;"">Quotation</h2>
+
+        <!-- Customer Details -->
+        <div style=""margin:5px 0;"">
+            <div>
+                <p style=""margin: 0;""><strong>Customer Name:</strong> {dt2.Rows[0]["ClientName"]}</p>
+                <p style=""margin: 0;""><strong>Branch:</strong> {dt2.Rows[0]["AsmtName"]}</p>
+            </div>
+            <div style='margin-right:10px;'>
+                <p style=""margin: 0;""><strong>Ticket No.:</strong> {ticketNO}</p>
+              
+            </div>
+ 
+        </div>
+<p style=""margin: 0;""><strong>Observation:</strong> {Observation}</p>
+                <p style=""margin: 0;""><strong>Description:</strong> {Description}</p>
+        <!-- Table -->
+        <table style=""width: 100%; border-collapse: collapse; margin-top: 20px;"">
+            <thead>
+                <tr>
+                    <th style=""border: 1px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;"">SrNO</th>
+                    <th style=""border: 1px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;"">Item Code</th>
+                    <th style=""border: 1px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;"">Item Name</th>
+                    <th style=""border: 1px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;"">GST</th>
+                    <th style=""border: 1px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;"">Qty</th>
+                    <th style=""border: 1px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;"">Unit</th>
+                    <th style=""border: 1px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;"">Rate</th>
+                    <th style=""border: 1px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;"">Gross Amount</th>
+                </tr>
+            </thead>
+            <tbody>";
+
+            // Loop through the DataTable rows and add data to the table dynamically
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                htmldesign += $@"
+        <tr>
+            <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{i + 1}</td>
+            <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["ItemCode"]}</td>
+            <td style=""border: 1px solid #000; padding: 8px;"">{dt.Rows[i]["ItemName"]}</td>
+            <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["ItemGST"]}</td>
+            <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["ItemQty"]}</td>
+            <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["ItemUnit"]}</td>
+            <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["ItemRate"]}</td>
+            <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["GrossAmt"]}</td>
+        </tr>";
+
+                string v = dt.Rows[i]["ItemRate"].ToString();
+                double itemRate = Convert.ToDouble(v);
+
+                int quantity = Convert.ToInt32(dt.Rows[i]["ItemQty"]);
+
+                total += quantity * itemRate;
+
+                double grossAmount = itemRate * quantity;
+
+
+            }
+
+            double gst = total * 18 / 100;
+            string words = ConvertRupeesPaise(gst + total);
+
+
+
+            htmldesign += $@"
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>Total</strong></td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{total}</td>
+                </tr>
+                <tr>
+                    <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>Management Fee</strong></td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">0</td>
+                </tr>
+                <tr>
+                    <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>GST 18%</strong></td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{gst}</td>
+                </tr>
+                <tr>
+                    <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>Grand Total</strong></td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{gst + total}</td>
+                </tr>
+            </tfoot>
+        </table>
+ <div style=""margin-top: 10px; font-style: italic;"">
+        Amount in Words: {words}    </div>
+
+        
+<div style='margin-top:50px; text-align:center;'><b>This is a system-generated quotation. Signature is not required.<br/>
+Thank you for your Business<b></div>
+
+
+    </body>
+    </html>";
+
+
+            var MailStatus = Cls_util.SendMailViaIIS_htmls("serviceexcellence@groupl.in", Email, "", "", "Ticket Assign-"+ticketNO, htmldesign, "qglnwhqumptscpgf", "smtp.gmail.com", "");
+            if (MailStatus == "Sent")
+            {
+                util.execQuery("update GroupLNewAppTicketMaster set Status='Assign To Vendor', VendorAssignDate=GETDATE() where MannualTicketNo='" + ticketNO+"'", util.strElect);
+            }
+
+            return Json(JsonConvert.SerializeObject(MailStatus));
+
+        }
 
     }
 
