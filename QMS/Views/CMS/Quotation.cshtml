@@ -210,6 +210,11 @@
                                         }
                                     </select>
                                 </div>
+                                <div class="col-2">
+                                    <button id="btnadditem" onclick="addItem()" class="btn btn-outline-primary">
+                                        Add New
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="row mb-3">
@@ -325,7 +330,16 @@
             $("#tickitnoid").select2();
             $("#itemcodeid").select2();
 
+    function addItem() {
 
+        $("#itemcode, #itemname, #itemunit, #itemrate,#itemGST").each(function () {
+            $(this).prop("readonly", !$(this).prop("readonly"));
+        });
+        $("#itemcode, #itemname, #itemunit, #itemrate,#itemGST,#qty,#grossamt").each(function () {
+            $(this).val("");
+        });
+
+    }
         </script>
 
 

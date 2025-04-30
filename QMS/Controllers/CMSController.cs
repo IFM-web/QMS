@@ -11,16 +11,16 @@ namespace QMS.Controllers
 {
     class QoutatonDetails
     {
-        public string ItemName { get; set; }
-        public string ItemCode { get; set; }
-        public string ItemRate { get; set; }
-        public string ItemUnit { get; set; }
-        public string TicketNo { get; set; }
-        public string TicketNO { get; set; }
-        public string ItemQty { get; set; }
-        public string ItemGst { get; set; }
-        public string ItemGST { get; set; }
-        public string GrossAmt { get; set; }
+        public string? ItemName { get; set; }
+        public string? ItemCode { get; set; }
+        public string? ItemRate { get; set; }
+        public string? ItemUnit { get; set; }
+        public string? TicketNo { get; set; }
+        public string? TicketNO { get; set; }
+        public string? ItemQty { get; set; }
+        public string? ItemGst { get; set; }
+        public string? ItemGST { get; set; }
+        public string? GrossAmt { get; set; }
        // public string Entrydate { get; set; }
         //public int Id { get; set; }
     }
@@ -57,14 +57,21 @@ namespace QMS.Controllers
             try
             {
                 var TicketNO = "";
+                string Msg = "";
+                int ItemCount = 0;
 
 
-				using (SqlConnection conn = new SqlConnection(util.strElect))
+
+
+                using (SqlConnection conn = new SqlConnection(util.strElect))
                 {
                     conn.Open();
                     foreach(var roc in array)
                     {
-                        string query = "INSERT INTO AddQoutaion   (ItemCode,ItemName,ItemUnit,ItemRate,ItemQty,ItemGST,GrossAmt,TicketNo,Entrydate) VALUES (@ItemCode, @ItemName, @ItemUnit, @ItemRate,@ItemQty,@ItemGST,@GrossAmt,@TicketNo,Getdate())";
+
+                      
+
+                            string query = "INSERT INTO AddQoutaion   (ItemCode,ItemName,ItemUnit,ItemRate,ItemQty,ItemGST,GrossAmt,TicketNo,Entrydate) VALUES (@ItemCode, @ItemName, @ItemUnit, @ItemRate,@ItemQty,@ItemGST,@GrossAmt,@TicketNo,Getdate())";
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.Parameters.AddWithValue("@ItemCode", roc.ItemCode);
@@ -85,6 +92,12 @@ namespace QMS.Controllers
 
 
 						}
+                        var ds = util.Fill("Select Count(*) from GroupLNewAppQuotationRateCard where ItemCode='" + roc.ItemCode + "'", util.strElect);
+                         ItemCount = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+                        if (ItemCount == 0)
+                        {
+                            util.execQuery($@"Insert into GroupLNewAppQuotationRateCard(ItemCode,ItemDescription,Make,Unit,Rate)values('{roc.ItemCode}','{roc.ItemName}','','{roc.ItemUnit}','{roc.ItemRate}')", util.strElect);
+                        }
                     }
 
                     util.Fill("update GroupLNewAppTicketMaster set Status='Quotation Prepared' where MannualTicketNo='"+ TicketNO + "' ", util.strElect);
@@ -202,6 +215,13 @@ namespace QMS.Controllers
 
 
 
+                        }
+
+                        var ds = util.Fill("Select Count(*) from GroupLNewAppQuotationRateCard where ItemCode='" + roc.ItemCode + "'", util.strElect);
+                        int ItemCount = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+                        if (ItemCount == 0)
+                        {
+                            util.execQuery($@"Insert into GroupLNewAppQuotationRateCard(ItemCode,ItemDescription,Make,Unit,Rate)values('{roc.ItemCode}','{roc.ItemName}','','{roc.ItemUnit}','{roc.ItemRate}')", util.strElect);
                         }
                     }
 

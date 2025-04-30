@@ -5,6 +5,13 @@
     var datatable = ViewBag.dt as System.Data.DataTable;
   
 }
+<style>
+    #btnadditem:hover{
+       
+        background-color: #0d6efd;
+      
+    }
+</style>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
 <div class=" container-fluid" id="bdy">
     <div class="card shadow mt-4" style="">
@@ -89,7 +96,7 @@
                             <div class="row">
                                 <div class="col-2 mb-2">
                                     <label class="form-label" for="itemCode">Enter Item Code</label>
-
+                                   
                                 </div>
                                 <div class="col-md-6">
                                     <select id="itemcodeid" class="form-control" onchange="BindCode()" style="width:100%">
@@ -101,8 +108,16 @@
                                                 <option value="@item.Value">@item.Text</option>
                                             }
                                         }
-                                    </select>
+                                    </select>   
+                                  
                                 </div>
+                                <div class="col-2">
+                                    <button id="btnadditem" onclick="addItem()"  class="btn btn-outline-primary">
+                                        Add New
+                                    </button>
+                                </div>
+                              
+                                
                             </div>
 
                             <div class="row mb-3">
@@ -212,6 +227,17 @@
     $("#tickitnoid").select2();
     $("#itemcodeid").select2();
 
+
+    function addItem() {
+       
+        $("#itemcode, #itemname, #itemunit, #itemrate,#itemGST").each(function () {
+            $(this).prop("readonly", !$(this).prop("readonly"));
+        });
+        $("#itemcode, #itemname, #itemunit, #itemrate,#itemGST,#qty,#grossamt").each(function () {
+            $(this).val("");
+        });
+        
+    }
 
 </script>
 

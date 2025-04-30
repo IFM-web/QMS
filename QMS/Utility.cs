@@ -413,7 +413,7 @@ namespace QMS
         public string SendMailViaIIS_htmls(string from, string to, string cc, string bcc, string subject, string _body, string MAIL_PASSWORD, string Host, string attachPath = "")
         {
             //create the mail message
-            string functionReturnValue = null;
+            string? functionReturnValue = null;
             string _from = from, _to = to, _cc = cc, _bcc = bcc, _subject = subject; //MAIL_PASSWORD = "15M7Y1998@$";
             try
             {

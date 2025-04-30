@@ -131,6 +131,9 @@ function addtoquotationreviewed() {
 
 
 function BindCode() {
+    $("#itemcode, #itemname, #itemunit, #itemrate,#itemGST").each(function () {
+        $(this).prop("readonly",true);
+    });
     var itemcodeid = $('#itemcodeid').val();
     $.ajax({
         url: myurl + '/CMS/BindCode',
