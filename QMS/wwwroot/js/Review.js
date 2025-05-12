@@ -358,33 +358,44 @@ function EditRow(id) {
 }
 
 function SaveData() {
-    var newdata = JSON.stringify(allitem);
-    $.ajax({
-        url: myurl + '/CMS/InsertReviewQoutation',
-        data: { data: newdata, ticketId: $("#tickitnoid").val() },
-        type: 'post',
+    if ($("#ManageFeesId").val() != '0') {
 
-        success: function (data) {
-            // SweetAlert for success
-            Swal.fire({
-                title: 'Success!',
-                text: data.message, // Assuming `data.message` contains the success message
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then(function () {
-                location.reload(); // Reload the page after the success alert is closed
-            });
-        },
-        error: function (xhr, status, error) {
-            // SweetAlert for error
-            Swal.fire({
-                title: 'Error!',
-                text: status,
-                icon: 'error',
-                confirmButtonText: 'Try Again'
-            });
-        },
-    });
+
+        var newdata = JSON.stringify(allitem);
+        $.ajax({
+            url: myurl + '/CMS/InsertReviewQoutation',
+            data: { data: newdata, ticketId: $("#tickitnoid").val(), ManageFeesId: $("#ManageFeesId").val() },
+            type: 'post',
+
+            success: function (data) {
+                // SweetAlert for success
+                Swal.fire({
+                    title: 'Success!',
+                    text: data.message, // Assuming `data.message` contains the success message
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(function () {
+                    location.reload(); // Reload the page after the success alert is closed
+                });
+            },
+            error: function (xhr, status, error) {
+                // SweetAlert for error
+                Swal.fire({
+                    title: 'Error!',
+                    text: status,
+                    icon: 'error',
+                    confirmButtonText: 'Try Again'
+                });
+            },
+        });
+    } else {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Select Management Fees !!',
+            icon: 'error',
+            confirmButtonText: 'Try Again'
+        });
+    }
 }
 
 

@@ -157,7 +157,7 @@ function show(visitdate,customer,site) {
 
                     }
                     row2 += `
-            <div class="col-md-6 ImageDiv">
+            <div class="col-6 ImageDiv">
             <h3 style='height:30px; text-align:center;  margin: 0px;
     background: #c3c1c1;
 }'>${section}</h3>
@@ -217,116 +217,111 @@ function BindSite() {
 
 function ExportPdf() {
     var style = `
-    <style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
+  <style>
+  table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+  }
 
-    .info-table th, td {
-        border: 1px solid #000;
-        padding: 8px;
-    
-    }
+  .info-table th, td {
+      border: 1px solid #000;
+      padding: 8px;
+  }
 
-    .audit-table th, .audit-table td {
-        border: 1px solid #000;
-        padding: 8px;
-        text-align: left;
-        vertical-align: middle;
-    }
+  .audit-table th, .audit-table td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: left;
+      vertical-align: middle;
+  }
 
-    body {
-        -webkit-print-color-adjust: exact;
-        font-family: 'Times New Roman', Times, serif, sans-serif;
-        background-color: none;
-    }
+  body {
+      -webkit-print-color-adjust: exact;
+      font-family: 'Times New Roman', Times, serif, sans-serif;
+      background-color: none;
+  }
 
-    .info-table span {
-        margin-left: 10px;
-        font-weight: 600;
-    }
+  .info-table span {
+      margin-left: 10px;
+      font-weight: 600;
+  }
 
-    header, footer {
-        display: none;
-    }
+  header, footer {
+      display: none;
+  }
 
-    @page {
-        size: A4;
-        margin: 6.20mm;
-        -webkit-print-color-adjust: exact;
-        font-family: serif, sans-serif;
-        page-break-after: always;
-    }
+  @page {
+      size: A4;
+      margin: 6.20mm;
+      -webkit-print-color-adjust: exact;
+      font-family: serif, sans-serif;
+      page-break-after: always;
+  }
 
-    .AuditImage {
-        width: 100px !important;
-        height: 100px !important;
-    }
+  .AuditImage {
+      width: 100px !important;
+      height: 100px !important;
+  }
 
-    .printhide {
-        display: none;
-    }
+  .printhide {
+      display: none;
+  }
 
-    .logo {
-        max-width: 250px;
-    }
+  .logo {
+      max-width: 250px;
+  }
 
-    .header1 {
-        text-align: center;
-        margin-bottom: 10px;
-        margin: auto;
-    }
+  .header1 {
+      text-align: center;
+      margin-bottom: 10px;
+      margin: auto;
+  }
 
-    @media print {
-        body {
-            margin: 0;
-            padding: 0;
-        }
+  @media print {
+      body {
+          margin: 0;
+          padding: 0;
+      }
 
-        .image-div {
-            height: 48vh; /* 2 rows per page with some buffer */
-            padding: 5px;
-            box-sizing: border-box;
-        }
+      .row {
+          display: flex !important;
+          flex-wrap: wrap;
+          page-break-inside: avoid;
+      }
 
-        .image-div img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-         .audit-table th, .audit-table td {
-        border: 1px solid #000;
-        padding: 8px;
-        text-align: left;
-        vertical-align: middle;
-    }
+      .col-6 {
+          width: 50% !important;
+          height: 50vh; /* Half of page height with some spacing */
+          box-sizing: border-box;
+          padding: 5px;
+          border: 1px solid black;
+      }
 
-        #AllImage {
-            page-break-before: always;
-        }
+      .image-div img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
 
-        .row {
-            display: flex !important;
-            flex-wrap: wrap;
-        }
+      .audit-table th, .audit-table td {
+          border: 1px solid #000;
+          padding: 8px;
+          text-align: left;
+          vertical-align: middle;
+      }
 
-        .col-6 {
-            width: 50% !important;
-            border :1px solid black;
-        }
+      #AllImage {
+          page-break-before: always;
+      }
 
-      
-        .row > [class*='col-'] {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
+      .row > [class*='col-'] {
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+      }
+  }
+</style>
 
-        .row {
-            page-break-inside: avoid !important;
-        }
-    }
 </style>
 
     `;

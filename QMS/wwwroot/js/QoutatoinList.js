@@ -258,28 +258,34 @@ function printData() {
                 total += data1[i].ItemQty * data1[i].ItemRate;
             }
 
-            var gst = total * 18 / 100;
+
+            var MagagePercent = data2[0].ManagePercent;
+            let percent = parseFloat(MagagePercent.replace("%", ""));
+            var ManageAmt = total * percent / 100;
+
+            var gst = (total + ManageAmt) * 18 / 100;
             var gs = gst + total;
-            var words = convertRupeesPaise(gs.toFixed(2));
+
+            var words = convertRupeesPaise((gs + ManageAmt).toFixed(2));
 
             var finalHtml = htmlforprint + row + `
               
                   
                         <tr>
                             <td colspan="6" class="text-right"><strong>Total</strong></td>
-                            <td colspan="2" class="text-right">${total}</td>
+                            <td colspan="2" class="text-right">${total.toFixed(2) }</td>
                         </tr>
                         <tr>
-                            <td colspan="6" class="text-right"><strong>Management Fee</strong></td>
-                            <td colspan="2" class="text-right">0</td>
+                            <td colspan="6" class="text-right"><strong>Management Fee (${MagagePercent})</strong></td>
+                            <td colspan="2" class="text-right">${ManageAmt}</td>
                         </tr>
                         <tr>
                             <td colspan="6" class="text-right"><strong>GST 18%</strong></td>
-                            <td colspan="2" class="text-right">${gst}</td>
+                            <td colspan="2" class="text-right">${gst.toFixed(2) }</td>
                         </tr>
                         <tr>
                             <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
-                            <td colspan="2" class="text-right">${gs.toFixed(2)}</td>
+                            <td colspan="2" class="text-right">${(gs + ManageAmt).toFixed(2)}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -307,35 +307,44 @@ function deleteRow(index) {
 
 
 function SaveData() {
-    $('#loderid').show();
-    var newdata = JSON.stringify(allitem);
-    $.ajax({
-        url: myurl+'/CMS/InsertQoutation',
-        data: { data: newdata },
-        type: 'post',
+    if ($("#ManageFeesId").val() != '0') {
+        $('#loderid').show();
+        var newdata = JSON.stringify(allitem);
+        $.ajax({
+            url: myurl + '/CMS/InsertQoutation',
+            data: { data: newdata },
+            type: 'post',
 
-        success: function (data) {
-            // SweetAlert for success
-            $('#loderid').hide();
-            Swal.fire({
-                title: 'Success!',
-                text: data.message, // Assuming `data.message` contains the success message
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then(function () {
-                location.reload(); // Reload the page after the success alert is closed
-            });
-        },
-        error: function (xhr, status, error) {
-            // SweetAlert for error
-            Swal.fire({
-                title: 'Error!',
-                text: 'An error occurred while saving the data. Please try again.',
-                icon: 'error',
-                confirmButtonText: 'Try Again'
-            });
-        },
-    });
+            success: function (data) {
+                // SweetAlert for success
+                $('#loderid').hide();
+                Swal.fire({
+                    title: 'Success!',
+                    text: data.message, // Assuming `data.message` contains the success message
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(function () {
+                    location.reload(); // Reload the page after the success alert is closed
+                });
+            },
+            error: function (xhr, status, error) {
+                // SweetAlert for error
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while saving the data. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'Try Again'
+                });
+            },
+        });
+    } else {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Select Management Fees !!',
+            icon: 'error',
+            confirmButtonText: 'Try Again'
+        });
+    }
 }
 
 

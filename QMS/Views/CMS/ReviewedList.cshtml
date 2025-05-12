@@ -189,7 +189,19 @@
                                     </tbody>
                                 </table>
                             </div>
-
+                            <div class="col-md-6">
+                                <lable>Management Fees Select</lable>
+                                <select id="ManageFeesId" class="form-control" style="width:100%">
+                                    <option value="0">select</option>
+                                    @if (ViewBag.managefee != null)
+                                    {
+                                        foreach (var item in ViewBag.managefee as List<SelectListItem>)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
                             <div>
                                 <button id="btnsave" type="button" onclick="SaveData()" class="btn btn-dark w-100 mt-3">Submit</button>
                             </div>

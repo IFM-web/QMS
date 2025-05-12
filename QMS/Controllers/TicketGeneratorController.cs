@@ -333,6 +333,12 @@ namespace QMS.Controllers
 
 
 
+        public static string ToFixedTruncate(double value, int digits)
+        {
+            double factor = Math.Pow(10, digits);
+            double truncated = Math.Truncate(value * factor) / factor;
+            return truncated.ToString("F" + digits);
+        }
 
 
 
@@ -350,7 +356,7 @@ namespace QMS.Controllers
             dt = ds.Tables[0];
             dt2 = ds2.Tables[0];
 
-            double total = 0;
+            double total = 0.0;
 
             string htmldesign = $@"
     <!DOCTYPE html>
@@ -422,8 +428,15 @@ namespace QMS.Controllers
 
             }
 
-            double gst = total * 18 / 100;
-            string words = ConvertRupeesPaise(gst + total);
+            string MagagePercent = dt2.Rows[0]["ManagePercent"].ToString();
+            int percent = Convert.ToInt32(MagagePercent.Replace("%", ""));
+            double ManageAmt = total * percent / 100;
+
+            double gst = (total + ManageAmt) * 18.0 / 100;
+            double finalamt = Convert.ToDouble( ToFixedTruncate((gst + total + ManageAmt),2));
+            
+            string words = ConvertRupeesPaise(finalamt);
+           
 
 
 
@@ -435,16 +448,16 @@ namespace QMS.Controllers
                     <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{total}</td>
                 </tr>
                 <tr>
-                    <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>Management Fee</strong></td>
-                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">0</td>
+                    <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>Management Fee ({MagagePercent})</strong></td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{ManageAmt}</td>
                 </tr>
                 <tr>
                     <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>GST 18%</strong></td>
-                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{gst}</td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{ToFixedTruncate(gst,2)}</td>
                 </tr>
                 <tr>
                     <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>Grand Total</strong></td>
-                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{gst + total}</td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{finalamt}</td>
                 </tr>
             </tfoot>
         </table>
@@ -1033,8 +1046,14 @@ Thank you for your Business<b></div>
 
             }
 
-            double gst = total * 18 / 100;
-            string words = ConvertRupeesPaise(gst + total);
+            string MagagePercent = dt2.Rows[0]["ManagePercent"].ToString();
+            int percent = Convert.ToInt32(MagagePercent.Replace("%", ""));
+            double ManageAmt = total * percent / 100;
+
+            double gst = (total + ManageAmt) * 18.0 / 100;
+            double finalamt = Convert.ToDouble(ToFixedTruncate((gst + total + ManageAmt), 2));
+
+            string words = ConvertRupeesPaise(finalamt);
 
 
 
@@ -1046,16 +1065,16 @@ Thank you for your Business<b></div>
                     <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{total}</td>
                 </tr>
                 <tr>
-                    <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>Management Fee</strong></td>
-                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">0</td>
+                    <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>Management Fee ({MagagePercent})</strong></td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{ManageAmt}</td>
                 </tr>
                 <tr>
                     <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>GST 18%</strong></td>
-                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{gst}</td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{ToFixedTruncate(gst,2)}</td>
                 </tr>
                 <tr>
                     <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>Grand Total</strong></td>
-                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{gst + total}</td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{finalamt}</td>
                 </tr>
             </tfoot>
         </table>

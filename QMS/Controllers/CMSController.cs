@@ -33,7 +33,7 @@ namespace QMS.Controllers
         [Route("Quotation")]
         public IActionResult Quotation()
 		{
-
+            ViewBag.managefee = util.PopulateDropDown("select * from  dbo.GroupLNewAppManageFeeMaster", util.strElect);
 			ViewBag.tickit = util.PopulateDropDown("select MannualTicketNo ,MannualTicketNo from GroupLNewAppTicketMaster where Status='Move For Quotation'", util.strElect);
             ViewBag.itemcode = util.PopulateDropDown("select ItemCode,(ItemCode + ' ('+itemdescription+')') as ItemCode from GroupLNewAppQuotationRateCard", util.strElect);
             return View();
@@ -165,6 +165,7 @@ namespace QMS.Controllers
         [Route("ReviewedList")]
         public IActionResult ReviewedList()
         {
+            ViewBag.managefee = util.PopulateDropDown("select * from  dbo.GroupLNewAppManageFeeMaster", util.strElect);
             ViewBag.tickit = util.PopulateDropDown("select MannualTicketNo ,MannualTicketNo from GroupLNewAppTicketMaster where Status='Quotation Reviewed'", util.strElect);
 
             ViewBag.itemcode = util.PopulateDropDown("select ItemCode,(ItemCode + ' ('+itemdescription+')') as ItemCode from GroupLNewAppQuotationRateCard", util.strElect);
@@ -177,6 +178,7 @@ namespace QMS.Controllers
         {
             var recordsJson = Request.Form["data"].ToString();
             var ticketId = Request.Form["ticketId"].ToString();
+            var ManageFeesId = Request.Form["ManageFeesId"].ToString();
             var array = System.Text.Json.JsonSerializer.Deserialize<List<QoutatonDetails>>(recordsJson);
 
             try
@@ -225,7 +227,7 @@ namespace QMS.Controllers
                         }
                     }
 
-                    util.Fill("update GroupLNewAppTicketMaster set Status='Quotation Prepared' where MannualTicketNo='" + TicketNO + "' ", util.strElect);
+                    util.Fill("update GroupLNewAppTicketMaster set Status='Quotation Prepared',ManageFeesId='"+ ManageFeesId + "' where MannualTicketNo='" + TicketNO + "' ", util.strElect);
                 }
                 return Json(new { message = "Review Quotation Updated Successfully!" });
             }
