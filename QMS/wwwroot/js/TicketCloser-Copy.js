@@ -73,8 +73,7 @@ function dashboardd() {
                     "<td class='CreationDate'>" + (data[i].CreationDate || "") + "</td>" +
 
                     "<td>" +
-                    "<img data-toggle='modal' data-target='#myModal' onclick='image(\"" + url2 + "\")' " +
-                    "style='height: 100px; width: 100px;' src='" + url2 + "' class='TicketImage' alt='Ticket Image'>" +
+                   
                     "</td>" +
                     //"<td class='TicketImage'>" + ticketImagePath + "</td>" + 
                     "<td class='AssignedTo'>" + (data[i].AssignedTo || "") + "</td>" +
@@ -83,14 +82,13 @@ function dashboardd() {
                     "<td class='ClosureRemarks'>" + (data[i].ClosureRemarks || "") + "</td>" +
 
                     "<td>" +
-                    "<img data-toggle='modal' data-target='#myModal' onclick='image(\"" + url1 + "\")' " +
-                    "style='height: 100px; width: 100px;' src='" + url1 + "' class='ClosureSign' alt='Closure Sign'>" +
+                   
+                 
                     "</td>" +
                     //"<td class='ClosureSign'>" + ClosureSignPath + "</td>" +
                     //  "<td class='ClosurePhoto'>" + closurePhotoPath + "</td>" +
                     "<td>" +
-                    "<img data-toggle='modal' data-target='#myModal' onclick='image(\"" + url + "\")' " +
-                    "style='height: 100px; width: 100px;' src='" + url + "' class='ClosurePhoto' alt='Closure Photo'>" +
+                   
                     "</td>" +
 
                     "</tr>";
@@ -516,8 +514,8 @@ function TicketClosureBinddd(ticketno) {
                     "</tr>";
 
                 //document.getElementById('creationsign').src = url6;
-                document.getElementById('Clouserimage').src = url;
-                document.getElementById('tikit1image').src = url1;
+                //document.getElementById('Clouserimage').src = url;
+                //document.getElementById('tikit1image').src = url1;
                 ///  document.getElementById('tikit2image').src = url5;
                 document.getElementById('staffSignature').src = url4;
                 document.getElementById('clientSignature').src = url3;
@@ -588,11 +586,10 @@ function showTable(allitem) {
                     <td>${i + 1}</td>
                     <td><span class='ItemCode'>${allitem[i].ItemCode}<span></td>
                     <td><span class='itemname'>${allitem[i].ItemName}</span></td>
-                    <td><span class='GST'>18%</span></td>
+                
                     <td><span>${allitem[i].ItemQty}<span></td>
                     <td> <span class='Itemunit'> ${allitem[i].ItemUnit}<span></td>
-                    <td><span> ${allitem[i].ItemRate}<span></td>
-                    <td> <span class='grossamt'> ${allitem[i].GrossAmt}<span></td>
+            
                    
                 </tr>
             `;

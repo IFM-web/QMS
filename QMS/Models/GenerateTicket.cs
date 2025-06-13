@@ -24,6 +24,7 @@
 		public string custmernameid { get; set; }
 		public string sitenameid { get; set; }
 		public string tikitstatus { get; set; }
+        public string Branch { get; set; }
 
-	}
+    }
 }

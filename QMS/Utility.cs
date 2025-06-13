@@ -483,7 +483,7 @@ namespace QMS
         }
 
 
-
+       
 
         public void WriteLogFile(string LogPath, string Query, string Button, string Page, string IP, string BrowserName, string BrowerVersion, string javascript, string function)
         {

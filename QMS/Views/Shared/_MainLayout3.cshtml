@@ -265,7 +265,7 @@
 					<input type="hidden" name="Guid" class="" id="guid" value="@guidno" />
 					<div class="sidebar-header">
 						<a href="@Url.Action("Dashboard", "Home")">
-							<img src="~/IFM360Logo.jfif" style="width: 240px;height: 79px; margin-left: -15px; margin-right:20px; background-color: white;" />
+							<img src="~/GroupL.jfif" style="width: 240px;height: 79px; margin-left: -15px; margin-right:20px; background-color: white;" />
 						</a>
 					</div>
 					<button type="button" id="sidebarCollapse" class="btn btn-info">
@@ -384,7 +384,24 @@
 
 					<li><a href="~/TicketDashboard"><span>Ticket Dashboard</span></a></li>
 
-					<li><a href="~/Home/ticketclosure"><span>Create WCR </span></a></li>
+
+					<li class="active">
+
+						<a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle collapsed" href="#rpt2332"><span>Create WCR </span></a>
+						<ul class="list-unstyled collapse" id="rpt2332" style="">
+
+							<li><a href="~/Home/ticketclosure"><span>WCR With Image </span></a></li>
+							<li><a href="~/Home/WithoutImageTicketClosure"><span>WCR Without Image </span></a></li>
+
+
+
+
+
+
+						</ul>
+					</li>
+
+
 					<li class="active">
 						<a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle collapsed" href="#IFR"><span>Quotation Master </span></a>
 						<ul class="list-unstyled collapse" id="IFR" style="">

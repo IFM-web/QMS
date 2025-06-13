@@ -52,6 +52,7 @@ namespace QMS.Controllers
         public JsonResult InsertQoutation()
         {
             var recordsJson =  Request.Form["data"].ToString();
+            var ManageFeesId =  Request.Form["ManageFeesId"].ToString();
             var array = System.Text.Json.JsonSerializer.Deserialize<List<QoutatonDetails>>(recordsJson);
          
             try
@@ -100,7 +101,7 @@ namespace QMS.Controllers
                         }
                     }
 
-                    util.Fill("update GroupLNewAppTicketMaster set Status='Quotation Prepared' where MannualTicketNo='"+ TicketNO + "' ", util.strElect);
+                    util.Fill("update GroupLNewAppTicketMaster set Status='Quotation Prepared',ManageFeesId='"+ManageFeesId+"' where MannualTicketNo='" + TicketNO + "' ", util.strElect);
                 }
                 return Json(new { message = "Quotation Inserted Successfully!" }); 
             }

@@ -43,6 +43,56 @@ function BindCustomer(id) {
 }
 
 
+function bindRegion(id) {
+
+    $.ajax({
+        url: myurl + '/Home/bindRegion',
+        type: 'get',
+        data: {
+            id: id
+        },
+        success: function (data) {
+            var divid = $("#Region");
+            var data = JSON.parse(data);
+            divid.empty();
+            divid.append('<Option value>Select</Option>');
+            for (var i = 0; i < data.length; i++) {
+
+                divid.append(`<option value="${data[i].HrLocationCode}">${data[i].HrLocationDesc}</option>`);
+            }
+        },
+        error: function (error) {
+            console.log('Error loading customer data:', error);
+        }
+    });
+}
+
+function bindBranch() {
+
+    $.ajax({
+        url: myurl + '/Home/bindBranch',
+        type: 'get',
+        data: {
+            id: $("#companynameid").val(),
+            locid: $("#Region").val(),
+        },
+        success: function (data) {
+            var divid = $("#Branch");
+            var data = JSON.parse(data);
+            divid.empty();
+            divid.append('<Option value>Select</Option>');
+            for (var i = 0; i < data.length; i++) {
+
+                divid.append(`<option value="${data[i].LocationAutoID}">${data[i].LocationCode}</option>`);
+            }
+        },
+        error: function (error) {
+            console.log('Error loading customer data:', error);
+        }
+    });
+}
+
+
 
 
 //function BindTicket() {
@@ -150,6 +200,7 @@ function SaveData() {
                 priorityid: $("#priorityid").val(),
                 CRName: $("#clientnameid").val(),
                 CRMobile: $("#clientmobileid").val(),
+                Branch: $("#Branch").val(),
                 CREmail: $("#clientemailid").val()
 
             },

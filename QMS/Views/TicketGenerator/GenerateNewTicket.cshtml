@@ -125,7 +125,7 @@
             <div class="col-md-4 mb-2">
                 <div class="form-group">
                     <label for="companyname">Company Name</label>
-                <select id="companynameid" class="form-control mandatory" name="Company Name" onchange="BindCustomer(this.value)">
+                    <select id="companynameid" class="form-control mandatory" name="Company Name" onchange="bindRegion(this.value)">
                     <option value="0">select</option>
                     @if (ViewBag.companyname != null)
                     {
@@ -137,7 +137,36 @@
                 </select>
             </div>
             </div>
-    
+            <div class="col-md-4 mb-2">
+                <div class="form-group">
+                    <label for="Region">Region Name</label>
+                    <select id="Region" class="form-control mandatory" name="Region Name" onchange="bindBranch(this.value)">
+                        <option value="0">select</option>
+                       @*  @if (ViewBag.companyname != null)
+                        {
+                            foreach (var item in ViewBag.companyname as List<SelectListItem>)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        } *@
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="form-group">
+                    <label for="Branch">Branch Name</label>
+                    <select id="Branch" class="form-control mandatory" name="Branch Name" onchange="BindCustomer(this.value)">
+                        <option value="0">select</option>
+                       @*  @if (ViewBag.companyname != null)
+                        {
+                            foreach (var item in ViewBag.companyname as List<SelectListItem>)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        } *@
+                    </select>
+                </div>
+            </div>
             <div class="col-md-4 mb-2">
                 <div class="form-group">              
                     <label for="custmername"> Customer Name  </label>
@@ -243,6 +272,8 @@
 <script>
     $("#companynameid").select2();
     $("#custmernameid").select2();
+    $("#Region").select2();
+    $("#Branch").select2();
     $("#sitenameid").select2();
     $("#categoryid").select2();
     $("#tickettypeid").select2();

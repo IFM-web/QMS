@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System.Drawing.Printing;
 
 
 namespace QMS.Controllers
@@ -47,7 +48,8 @@ namespace QMS.Controllers
         [Route("TicketGenerator/BindCustomer")]
         public JsonResult BindCustomer(string companynameid)
         {
-            string sqlquery = "exec udp_GetCustomerListGroupl @CompanyCode='" + companynameid + "' ";
+            //string sqlquery = "exec udp_GetCustomerListGroupl @CompanyCode='" + companynameid + "' ";
+            string sqlquery = "select Distinct B.ClientCode,B.ClientName +' ('+B.ClientCode +')' as ClientName  from mstSaleClientDetails A  inner join mstSaleClient B on A.ClientCode=B.ClientCode  where LocationAutoID ='" + companynameid + "' ";
             DataSet ds = util.Fill(sqlquery, util.strElect);
             var dt = ds.Tables[0];
             var data = JsonConvert.SerializeObject(dt);
@@ -128,7 +130,9 @@ namespace QMS.Controllers
         [Route("GenerateTicketSmartFMWeb")]
         public JsonResult GenerateTicketSmartFMWeb(GenerateTicket obj)
         {
-            var ds = util.Fill($"exec udp_GenerateTicketSmartFMWeb @CompanyCode='{obj.companycode}', @TicketType='{obj.ttype}' ,@TicketCategory='{obj.tcate}', @Description='{obj.desc}',@Priority='{obj.priorityid}',@ClientCode='{obj.clientcode}', @asmtID='{obj.asmitid}',@ClientReprentativeName='{obj.CRName}', @ClientReprentativeMobile='{obj.CRMobile}',@ClientReprentativeEmail='{obj.CREmail}'", util.strElect);
+            var ds = util.Fill($"exec udp_GenerateTicketSmartFMWeb @CompanyCode='{obj.companycode}', @TicketType='{obj.ttype}' ,@TicketCategory='{obj.tcate}', @Description='{obj.desc}',@Priority='{obj.priorityid}',@ClientCode='{obj.clientcode}', @asmtID='{obj.asmitid}',@ClientReprentativeName='{obj.CRName}', @ClientReprentativeMobile='{obj.CRMobile}',@ClientReprentativeEmail='{obj.CREmail}',@BranchId='{obj.Branch}'", util.strElect);
+
+
 
             var message = ds.Tables[0].Rows[0][1].ToString();
             string GeneratedTicket = ds.Tables[0].Rows[0][0].ToString();
@@ -228,6 +232,9 @@ namespace QMS.Controllers
 
         public void TicketMail(GenerateTicket obj, string GeneratedTicket)
         {
+            var ds = util.Fill("exec udp_GetTicketGeneraterDetails @TicketNo='" + GeneratedTicket + "'", util.strElect);
+
+
             string? htmlbody = $@"<!DOCTYPE html><html lang=""en"">
                       <head><style>
                     body {{
@@ -245,8 +252,6 @@ namespace QMS.Controllers
                         background: #fff;
                         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                         border-radius: 12px;
-                        padding: 20px 30px;
-                        width: 400px;
                         text-align: left;
                     }}
 
@@ -263,24 +268,35 @@ namespace QMS.Controllers
                 <body>
                     <div class=""card"">
                         
-                        <p><b>Dear {obj.CRName}</b>,</p>
-                        <p style='font-weight:bold;'>We have received a ticket with the following details:</p>
+                        <p>Dear {obj.CRName},</p>
+                        <p>Namaste!</p>
+                        <p>Thank you for reaching out. We acknowledge receipt of your complaint, which has been logged into our system under:</p>
         
                             <p style='font-weight:bold;'><span>Ticket Number:</span> {GeneratedTicket}<p>
-                              <p style='font-weight:bold;'><span>Customer Name:</span> {obj.clientcode}</p>
-                              <p style='font-weight:bold;'><span>Site Name:</span> {obj.asmitid}</p>
+                              <p style='font-weight:bold;'><span>Customer Name:</span> {ds.Tables[0].Rows[0]["ClientName"].ToString()}</p>
+                              <p style='font-weight:bold;'><span>Site Name:</span> {ds.Tables[0].Rows[0]["AsmtName"].ToString()}</p>
                               <p style='font-weight:bold;'><span>Ticket Type:</span> {obj.ttype}</p>
                               <p style='font-weight:bold;'><span>Ticket Category:</span> {obj.tcate}</p>
                               <p style='font-weight:bold;'><span>Ticket Description:</span> {obj.desc}</p>         
                               <p style='font-weight:bold;'><span>Priority:</span> {obj.priorityid}</p>
-                        </ul>
+<br/>
+                       We take all concerns seriously and are currently reviewing the matter to ensure it is addressed appropriately. Our team has started investigating the issue and will update you with findings or next steps within 2 business days.
+<br/>
+<br/>
+Thank you for choosing <b>Group<span style='color:red'>L</span> </b> & assuring you best of our services. 
+<br/>
+<br/>
+Warm regards,<br/>
+<b>Service Excellence Team</b><br/>
+<b>Group<span style='color:red'>L</span> Services</b><br/>
+
                     </div>
                 </body>
                 </html>
                 ";
 
 
-            var MailStatus = Cls_util.SendMailViaIIS_htmls("serviceexcellence@groupl.in", "" + obj.CREmail + "", "", "", "The Service Request/Complaint Raised - " + GeneratedTicket + "", htmlbody.ToString(), "qglnwhqumptscpgf", "smtp.gmail.com", "");
+            var MailStatus = Cls_util.SendMailViaIIS_htmls("serviceexcellence@groupl.in", "" + obj.CREmail + "", "", "", "GroupL Acknowledgement : Ticket #" + GeneratedTicket + "", htmlbody.ToString(), "qglnwhqumptscpgf", "smtp.gmail.com", "");
 
         }
 
@@ -299,32 +315,37 @@ namespace QMS.Controllers
 <body style=""font-family: Arial, sans-serif; line-height: 1.5;"">
     <p>Dear {clientName},</p>
 
+I hope this message finds you well. <br/>
     <p>
         We would like to inform you that your ticket - {tickedtno}, has been assigned to {empname} for resolution.
     </p>
 
-    <p>Details of the Assigned Staff:</p>
+    <p>Details of the assigned member:</p>
   
         <p>Name: {empname}</p>
         <p>Mobile No.: {clientmobile}</p>
     
 
     <p>
-        {empname} will be working on your concern and will keep you updated on the progress. Should you have any further details to share or questions regarding this ticket, feel free to reach out directly to {empname} or contact our support team at 
+        {empname} will be working on your concern and will keep you updated on the progress. <br/><br/>
+Should you have any further details to share or questions regarding this ticket, feel free to reach out directly to  {empname} or contact our support team at 
         <a href=""mailto:first-impressions@group1.in"">first-impressions@groupL.in</a> or 8100432758.
     </p>
 
     <p>
-        Thank you for choosing GroupL. We are committed to resolving your concerns promptly and efficiently.
+       Thank you for choosing <b>Group<span style='color:red'>L</span></b> & assuring you best of our services. 
     </p>
-
-    <p>Best regards,<br>IFM360 Tech</p>
+<br/>
+<br/>
+Warm regards,<br/>
+<b>Service Excellence Team</b><br/>
+<b>Group<span style='color:red'>L</span> Services </b><br/>
 </body>
 </html>
 
 ";
 
-            var MailStatus = Cls_util.SendMailViaIIS_htmls("serviceexcellence@groupl.in", "" + clientEmail + "", "", "", "Technician Assigned for Analysis/Job Estimation - " + tickedtno + "", assignhtml.ToString(), "qglnwhqumptscpgf", "smtp.gmail.com", "");
+            var MailStatus = Cls_util.SendMailViaIIS_htmls("serviceexcellence@groupl.in", "" + clientEmail + "", "", "", "GroupL Update: Technician Assigned – Ticket #" + tickedtno + "", assignhtml.ToString(), "qglnwhqumptscpgf", "smtp.gmail.com", "");
 
             return MailStatus;
         }
@@ -365,12 +386,21 @@ namespace QMS.Controllers
         <meta charset=""UTF-8"">
         <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
         <title>Quotation</title>
-    </head>
+<style>
+   ol li{{margin: 10px 0;
+      
+  }}
+</style>   </head>
     <body style=""font-family: Arial, sans-serif; margin: 40px; padding: 0;"">
         <!-- Logo and Header -->
-        <div style=""text-align: center; margin-bottom: 20px;"">
+        <div style=""text-align: center;"">
             <img src=""https://ifm360.in/grouplreportingportal/grouplreportingportal/GroupL.jfif"" alt=""Group L Logo"" style=""max-width: 150px;"">
         </div>
+<div style=""text-align: center; margin-bottom: 20px;"">
+GroupL Services Private Limited
+<br/>
+W-31 3rd floor Okhla industrial area phase-2 New Delhi 110020
+</div><br/><br/>
         <h2 style=""text-align: center; margin: 10px 0;"">Quotation</h2>
 
         <!-- Customer Details -->
@@ -382,6 +412,7 @@ namespace QMS.Controllers
             <div>
                 <p style=""margin: 0;""><strong>Ticket No.:</strong> {tickitnoid}</p>
                 <p style=""margin: 0;""><strong>Ticket Date:</strong> {dt2.Rows[0]["TicketDate"]}</p>
+  <p style=""margin: 0;""><strong>Quotation Date:</strong> {Convert.ToDateTime(dt.Rows[0]["Entrydate"]).ToString("dd MMM yyyy")}</p>
             </div>
         </div>
 
@@ -404,6 +435,10 @@ namespace QMS.Controllers
             // Loop through the DataTable rows and add data to the table dynamically
             for (int i = 0; i < dt.Rows.Count; i++)
             {
+
+                int quantity = Convert.ToInt32(dt.Rows[i]["ItemQty"]);
+                double rate = Convert.ToDouble(dt.Rows[i]["ItemRate"]);
+
                 htmldesign += $@"
         <tr>
             <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{i + 1}</td>
@@ -413,13 +448,12 @@ namespace QMS.Controllers
             <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["ItemQty"]}</td>
             <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["ItemUnit"]}</td>
             <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["ItemRate"]}</td>
-            <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["GrossAmt"]}</td>
+            <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{(rate * quantity)}</td>
         </tr>";
 
                 string v = dt.Rows[i]["ItemRate"].ToString();
                 double itemRate = Convert.ToDouble(v);
 
-                int quantity = Convert.ToInt32(dt.Rows[i]["ItemQty"]);
 
                 total += quantity * itemRate;
 
@@ -432,11 +466,11 @@ namespace QMS.Controllers
             int percent = Convert.ToInt32(MagagePercent.Replace("%", ""));
             double ManageAmt = total * percent / 100;
 
-            double gst = (total + ManageAmt) * 18.0 / 100;
-            double finalamt = Convert.ToDouble( ToFixedTruncate((gst + total + ManageAmt),2));
-            
+            double gst = (total + ManageAmt) * 18 / 100;
+            double finalamt = Convert.ToDouble(ToFixedTruncate((gst + total + ManageAmt), 2));
+
             string words = ConvertRupeesPaise(finalamt);
-           
+
 
 
 
@@ -453,7 +487,7 @@ namespace QMS.Controllers
                 </tr>
                 <tr>
                     <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>GST 18%</strong></td>
-                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{ToFixedTruncate(gst,2)}</td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{ToFixedTruncate(gst, 2)}</td>
                 </tr>
                 <tr>
                     <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>Grand Total</strong></td>
@@ -463,8 +497,34 @@ namespace QMS.Controllers
         </table>
  <div style=""margin-top: 10px; font-style: italic;"">
         Amount in Words: {words}    </div>
+<div><br/>
 
-        
+<p><b>Terms and Conditions:</b></p>
+<ol>
+  <li>This quotation is valid for 30 days from the date of issue.</li>
+  <li>Scope of work will be clearly defined, including both inclusions and exclusions.</li>
+  <li>Quantity, unit price, and applicable taxes will be mentioned for each item/service.</li>
+  <li>Payment terms will include advance percentage, balance payment timeline, and any applicable penalties for delay.</li>
+  <li>Taxes and duties (e.g., GST) will be specified as either inclusive or exclusive.</li>
+  <li>Labour charges will either be included or mentioned separately, if applicable.</li>
+  <li>Responsibility for transportation costs will be defined—either borne by the vendor or the client.</li>
+  <li>Delivery will be made within a specified number of working days from order confirmation.</li>
+  <li>Items will be delivered to the location specified by the client.</li>
+  <li>Installation will either be included or quoted separately with relevant terms.</li>
+  <li>Warranty details for materials and/or installation will be provided, including duration and conditions.</li>
+  <li>Client will ensure access to necessary utilities like water, electricity, and site access during execution.</li>
+  <li>All required municipal or statutory permits and approvals shall be obtained by the client.</li>
+  <li>Any variation in quantity or specifications after approval will be subject to revised quotation and client confirmation.</li>
+  <li>Delays caused by force majeure events (e.g., natural disasters, strikes) will not be considered the vendor's responsibility.</li>
+  <li>Work shall be considered complete only after formal sign-off by the client.</li>
+</ol>
+
+</div><br/>
+<p>Prepared by:</p>
+<p>Employee Id:</p> 
+<p>Designation:</p>
+
+
 <div style='margin-top:50px; text-align:center;'><b>This is a system-generated quotation. Signature is not required.<br/>
 Thank you for your Business<b></div>
 
@@ -521,22 +581,35 @@ Thank you for your Business<b></div>
 <head><meta charset = ""UTF-8""><meta name = ""viewport"" content = ""width=device-width, initial-scale=1.0"">
    </head>
 <body style = ""font-family: Arial, sans-serif; line-height: 1.6;""><p> Dear {ClientName},</p>
-    <p> Please find attached quotation.</p>
-    <p> Kindly review and approve at your earliest convenience.</p>
+<p>Namaste!</p>
+
+    <p>Please find attached the quotation for your review and approval, as per the requirement raised under Ticket #{tickitnoid}. The quotation includes detailed pricing, scope of work, and applicable terms and conditions.<br/><br/>
+Kindly review and confirm your approval at the earliest convenience so we may proceed accordingly. If there are any clarifications or modifications required, please feel free to let us know. <p>
+
     <div style = ""margin: 20px 0;""><a href = ""https://ifm360.in/Ticketing/QMS/ApprovedAndReview?type=Approved&&ticketno={tickitnoid}""
            style = ""display: inline-block; padding: 10px 20px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 4px; margin-right:10px;"">Approve</a>
         <a href = ""https://ifm360.in/Ticketing/QMS/ApprovedAndReview?type=Reviewed&&ticketno={tickitnoid}""
-           style = ""display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 4px;"">
-           Reviewed  </a></div><p> Best regards,</p><p> GroupL Team </p></body></html>";
+           style = ""display: inline-block; padding: 10px 20px; color: #fff; background-color: red; text-decoration: none; border-radius: 4px;"">
+           Reject  </a></div>
+
+ <p>
+       Thank you for choosing <b>Group<span style='color:red'>L</span></b> & assuring you best of our services. 
+    </p>
+<br/>
+<br/>
+Warm regards,<br/>
+<b>Service Excellence Team</b><br/>
+<b>Group<span style='color:red'>L</span> Services </b><br/>
+
+</body></html>";
 
 
 
-            var MailStatus = Cls_util.SendMailViaIIS_htmls("serviceexcellence@groupl.in", ClientEmail, "", "", "Quotation Submission for Approval for Ticket No - " + tickitnoid, tbody, "qglnwhqumptscpgf", "smtp.gmail.com", filePath);
+            var MailStatus = Cls_util.SendMailViaIIS_htmls("serviceexcellence@groupl.in", ClientEmail, "", "", "GroupL Update: Quotation Submission for Approval for Ticket No #" + tickitnoid, tbody, "qglnwhqumptscpgf", "smtp.gmail.com", filePath);
 
             // Return a success message or file path to the client
             return Json(new { success = "PDF Attachment send to the Client Mail SuccessFully !!" });
         }
-
 
         static string[] ones = { "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" };
         static string[] teens = { "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
@@ -551,12 +624,10 @@ Thank you for your Business<b></div>
             string word = "";
             int n = numStr.Length;
 
-            if (n > 9) return "Overflow"; // number out of bounds
+            if (n > 9) return "Overflow"; // max 9 digits
 
-            // Pad the number with leading zeros for easier parsing
             numStr = numStr.PadLeft(9, '0');
 
-            // Split the number into groups
             string crore = numStr.Substring(0, 2);
             string lakh = numStr.Substring(2, 2);
             string thousand = numStr.Substring(4, 2);
@@ -564,33 +635,25 @@ Thank you for your Business<b></div>
             string ten = numStr.Substring(7, 2);
 
             if (int.Parse(crore) > 0)
-            {
                 word += $"{ConvertTwoDigits(int.Parse(crore))} Crore ";
-            }
             if (int.Parse(lakh) > 0)
-            {
                 word += $"{ConvertTwoDigits(int.Parse(lakh))} Lakh ";
-            }
             if (int.Parse(thousand) > 0)
-            {
                 word += $"{ConvertTwoDigits(int.Parse(thousand))} Thousand ";
-            }
             if (int.Parse(hundred) > 0)
-            {
                 word += $"{ones[int.Parse(hundred)]} Hundred ";
-            }
             if (int.Parse(ten) > 0)
-            {
-                word += ConvertTwoDigits(int.Parse(ten));
-            }
+                word += $"{(word != "" ? "and " : "")}{ConvertTwoDigits(int.Parse(ten))}";
 
             return word.Trim();
         }
 
         public static string ConvertTwoDigits(int num)
         {
+            if (num == 0) return "";
             if (num < 10) return ones[num];
-            if (num >= 10 && num < 20) return teens[num - 11];
+            if (num == 10) return "Ten";
+            if (num > 10 && num < 20) return teens[num - 11];
 
             int unit = num % 10;
             int ten = num / 10;
@@ -599,22 +662,19 @@ Thank you for your Business<b></div>
 
         public static string ConvertRupeesPaise(double amount)
         {
-            string[] parts = amount.ToString().Split('.');
+            string[] parts = amount.ToString("0.00").Split('.');
             string rupeesInWords = NumberToWords(int.Parse(parts[0]));
-            string paiseInWords = parts.Length > 1 ? ConvertTwoDigits(int.Parse(parts[1].PadRight(2, '0'))) : "";
+            string paiseInWords = ConvertTwoDigits(int.Parse(parts[1]));
 
             string result = "";
             if (!string.IsNullOrEmpty(rupeesInWords))
-            {
                 result += $"{rupeesInWords} Rupees";
-            }
-            if (!string.IsNullOrEmpty(paiseInWords))
-            {
+            if (!string.IsNullOrEmpty(paiseInWords) && paiseInWords != "Zero")
                 result += $" and {paiseInWords} Paise";
-            }
 
             return result.Trim();
         }
+
         [Route("QMS/ApprovedAndReview")]
         public IActionResult ApprovedAndReview(string type, string ticketno)
 
@@ -736,7 +796,7 @@ Thank you for your Business<b></div>
 
         {
 
-          
+
             var data = "";
 
             var ds = util.Fill("select status from GroupLNewAppTicketMaster  where MannualTicketNo='" + ticketno + "' ", util.strElect);
@@ -775,9 +835,6 @@ Thank you for your Business<b></div>
         {
 
 
-            /*  string query = "exec udp_GetTicketDashboardNew @FromDate='" + obj.fromdate + "' ,@ToDate='" + obj.todate + "' ,@CompanyCode='" + obj.companycode + "' ,@TicketType= '" + obj.ttype + "',@TicketCategory='" + obj.tcate + "' ,@Priority= '" + obj.priorityid + "',@ClientCode='" + obj.clientcode + "' ,@AsmtID='" + obj.asmitid + "' ,@Status='" + obj.status + "' ,@TicketNo= '" + obj.ticketno + "'";
-              var ds = util.Fill(query, util.strElect); */
-
             string query = "exec udp_GetTicketDashboardNew @FromDate='" + obj.fromdate + "' ,@ToDate='" + obj.todate + "' ,@CompanyCode='" + obj.companycode + "' ,@TicketType= '" + obj.ttype + "',@TicketCategory='" + obj.tcate + "' ,@Priority= '" + obj.priorityid + "',@ClientCode='" + obj.clientcode + "' ,@AsmtID='" + obj.asmitid + "' ,@Status='" + obj.status + "' ,@TicketNo= '" + obj.ticketno + "'";
             var ds = util.Fill(query, util.strElect);
 
@@ -787,22 +844,18 @@ Thank you for your Business<b></div>
             return Json(data);
         }
 
-    //    var dt = ds.Tables[0];
-    //    var data = JsonConvert.SerializeObject(dt);
-    //        return Json(data);
-    //}
 
-    public JsonResult GetDataToReview(string TicketNo)
-    {
+        public JsonResult GetDataToReview(string TicketNo)
+        {
 
-        var ds = util.Fill("select a.* from AddQoutaion a join GroupLNewAppTicketMaster b on a.TicketNo=b.MannualTicketNo where b.Status='Quotation Reviewed' and b.MannualTicketNo='" + TicketNo + "'", util.strElect);
+            var ds = util.Fill("select a.* from AddQoutaion a join GroupLNewAppTicketMaster b on a.TicketNo=b.MannualTicketNo where b.Status='Quotation Reviewed' and b.MannualTicketNo='" + TicketNo + "'", util.strElect);
 
 
-        var dt = ds.Tables[0];
-        return Json(JsonConvert.SerializeObject(dt));
-    }
+            var dt = ds.Tables[0];
+            return Json(JsonConvert.SerializeObject(dt));
+        }
 
-        public JsonResult binddashboard(string companynameid)
+        public JsonResult binddashboard(string companynameid, string zone, string branchv)
         {
             DataTable dt = new DataTable();
 
@@ -830,7 +883,16 @@ Thank you for your Business<b></div>
         public JsonResult GetDataToReviewdd(string TicketNo)
         {
 
-            var ds = util.Fill("select a.* from AddQoutaion a join GroupLNewAppTicketMaster b on a.TicketNo=b.MannualTicketNo where /*b.Status='Quotation Reviewed' and*/ b.MannualTicketNo='" + TicketNo + "'", util.strElect);
+            var ds = util.Fill("select a.* from AddQoutaion a join GroupLNewAppTicketMaster b on a.TicketNo=b.MannualTicketNo where b.Status='Quotation Reviewed' and b.MannualTicketNo='" + TicketNo + "'", util.strElect);
+
+
+            var dt = ds.Tables[0];
+            return Json(JsonConvert.SerializeObject(dt));
+        }
+        public JsonResult GetDataToReviewddclose(string TicketNo)
+        {
+
+            var ds = util.Fill("select a.* from AddQoutaion a join GroupLNewAppTicketMaster b on a.TicketNo=b.MannualTicketNo where b.Status='Closed' and b.MannualTicketNo='" + TicketNo + "'", util.strElect);
 
 
             var dt = ds.Tables[0];
@@ -839,7 +901,7 @@ Thank you for your Business<b></div>
 
         #region Vendor List
 
-      
+
         public IActionResult VendorLists(string? TicketNo)
 
         {
@@ -848,18 +910,18 @@ Thank you for your Business<b></div>
             ViewBag.dt = ds.Tables[0];
             return View("VendorList");
         }
-   
+
         public JsonResult SendToVendor(string Id, string TicketNo)
         {
-            var ds = util.Fill("select Name,Email from VendorMaster where id='"+Id+"'", util.strElect);
+            var ds = util.Fill("select Name,Email from VendorMaster where id='" + Id + "'", util.strElect);
             string Name = ds.Tables[0].Rows[0][0].ToString();
             string Email = ds.Tables[0].Rows[0][1].ToString();
             string mes = "";
 
-            if(Email != "")
+            if (Email != "")
             {
-                 mes = util.execQuery("Update GroupLNewAppTicketMaster set status='Executed by Vendor',VendorId='"+Id+"' where MannualTicketNo='"+TicketNo+"' ", util.strElect);
-             
+                mes = util.execQuery("Update GroupLNewAppTicketMaster set status='Executed by Vendor',VendorId='" + Id + "' where MannualTicketNo='" + TicketNo + "' ", util.strElect);
+
                 string tbody = $@"<p>Dear {Name},</p>
 
 <p>We kindly request you to update the item prices for <strong>Group L</strong>.</p>
@@ -881,7 +943,7 @@ Thank you for your Business<b></div>
                 var MailStatus = Cls_util.SendMailViaIIS_htmls("serviceexcellence@groupl.in", Email, "", "", "Update Items Price GroupL", tbody, "qglnwhqumptscpgf", "smtp.gmail.com", "");
 
             }
-            if(mes== "Successfull")
+            if (mes == "Successfull")
             {
                 mes = "Quotation Sent To Vendor  !!";
             }
@@ -894,7 +956,7 @@ Thank you for your Business<b></div>
 
         }
 
-       
+
         public IActionResult SubmitbyVendor(string ticketno)
         {
             var ds = util.Fill("select Id,ItemCode,ItemName,ItemUnit,isnull(ItemRate,'0')ItemRate,isnull(ItemQty,0)ItemQty from AddQoutaion a join GroupLNewAppTicketMaster b on a.TicketNo=b.MannualTicketNo where Status='Executed by Vendor' and TicketNo='" + ticketno + "'", util.strElect);
@@ -913,11 +975,11 @@ Thank you for your Business<b></div>
             var obj = JArray.Parse(JsonData);
             foreach (var item in obj)
             {
-                 msg = util.execQuery("Update AddQoutaion set ItemRate='" + item["rate"] + "',GrossAmt='" + item["toatal"] +"' where  Id='" + item["Id"] + "' ", util.strElect);
+                msg = util.execQuery("Update AddQoutaion set ItemRate='" + item["rate"] + "',GrossAmt='" + item["toatal"] + "' where  Id='" + item["Id"] + "' ", util.strElect);
             }
             if (msg == "Successfull")
             {
-               msg= util.execQuery("update GroupLNewAppTicketMaster set Status='Quotation Submitted by Vendor' where MannualTicketNo='"+ticketNO+"' ", util.strElect);
+                msg = util.execQuery("update GroupLNewAppTicketMaster set Status='Quotation Submitted by Vendor' where MannualTicketNo='" + ticketNO + "' ", util.strElect);
             }
             return Json(JsonConvert.SerializeObject(msg));
         }
@@ -930,11 +992,11 @@ Thank you for your Business<b></div>
             var obj = JArray.Parse(JsonData);
             foreach (var item in obj)
             {
-                 msg = util.execQuery("Update AddQoutaion set ItemRate='" + item["rate"] + "',GrossAmt='" + item["toatal"] +"' where  Id='" + item["Id"] + "' ", util.strElect);
+                msg = util.execQuery("Update AddQoutaion set ItemRate='" + item["rate"] + "',GrossAmt='" + item["toatal"] + "' where  Id='" + item["Id"] + "' ", util.strElect);
             }
             if (msg == "Successfull")
             {
-               msg= util.execQuery("update GroupLNewAppTicketMaster set Status='Reviewed Quotation Submitted by Vendor' where MannualTicketNo='"+ticketNO+"' ", util.strElect);
+                msg = util.execQuery("update GroupLNewAppTicketMaster set Status='Reviewed Quotation Submitted by Vendor' where MannualTicketNo='" + ticketNO + "' ", util.strElect);
             }
             return Json(JsonConvert.SerializeObject(msg));
         }
@@ -981,6 +1043,9 @@ Thank you for your Business<b></div>
         <meta charset=""UTF-8"">
         <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
         <title>Quotation</title>
+<style>ol li{{margin: 10px 0;
+       
+  }}</style>
     </head>
     <body style=""font-family: Arial, sans-serif; margin: 40px; padding: 0;"">
         <!-- Logo and Header -->
@@ -1022,6 +1087,11 @@ Thank you for your Business<b></div>
             // Loop through the DataTable rows and add data to the table dynamically
             for (int i = 0; i < dt.Rows.Count; i++)
             {
+                string v = dt.Rows[i]["ItemRate"].ToString();
+                double itemRate = Convert.ToDouble(v);
+
+                int quantity = Convert.ToInt32(dt.Rows[i]["ItemQty"]);
+
                 htmldesign += $@"
         <tr>
             <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{i + 1}</td>
@@ -1031,13 +1101,10 @@ Thank you for your Business<b></div>
             <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["ItemQty"]}</td>
             <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["ItemUnit"]}</td>
             <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["ItemRate"]}</td>
-            <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{dt.Rows[i]["GrossAmt"]}</td>
+            <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{itemRate * quantity}</td>
         </tr>";
 
-                string v = dt.Rows[i]["ItemRate"].ToString();
-                double itemRate = Convert.ToDouble(v);
 
-                int quantity = Convert.ToInt32(dt.Rows[i]["ItemQty"]);
 
                 total += quantity * itemRate;
 
@@ -1070,7 +1137,7 @@ Thank you for your Business<b></div>
                 </tr>
                 <tr>
                     <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>GST 18%</strong></td>
-                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{ToFixedTruncate(gst,2)}</td>
+                    <td style=""border: 1px solid #000; padding: 8px; text-align: center;"">{ToFixedTruncate(gst, 2)}</td>
                 </tr>
                 <tr>
                     <td colspan=""7"" style=""border: 1px solid #000; padding: 8px; text-align: right;""><strong>Grand Total</strong></td>
@@ -1080,8 +1147,34 @@ Thank you for your Business<b></div>
         </table>
  <div style=""margin-top: 10px; font-style: italic;"">
         Amount in Words: {words}    </div>
+<div><br/>
 
-        
+<p><b>Terms and Conditions:</b></p>
+<ol>
+  <li>This quotation is valid for 30 days from the date of issue.</li>
+  <li>Scope of work will be clearly defined, including both inclusions and exclusions.</li>
+  <li>Quantity, unit price, and applicable taxes will be mentioned for each item/service.</li>
+  <li>Payment terms will include advance percentage, balance payment timeline, and any applicable penalties for delay.</li>
+  <li>Taxes and duties (e.g., GST) will be specified as either inclusive or exclusive.</li>
+  <li>Labour charges will either be included or mentioned separately, if applicable.</li>
+  <li>Responsibility for transportation costs will be defined—either borne by the vendor or the client.</li>
+  <li>Delivery will be made within a specified number of working days from order confirmation.</li>
+  <li>Items will be delivered to the location specified by the client.</li>
+  <li>Installation will either be included or quoted separately with relevant terms.</li>
+  <li>Warranty details for materials and/or installation will be provided, including duration and conditions.</li>
+  <li>Client will ensure access to necessary utilities like water, electricity, and site access during execution.</li>
+  <li>All required municipal or statutory permits and approvals shall be obtained by the client.</li>
+  <li>Any variation in quantity or specifications after approval will be subject to revised quotation and client confirmation.</li>
+  <li>Delays caused by force majeure events (e.g., natural disasters, strikes) will not be considered the vendor's responsibility.</li>
+  <li>Work shall be considered complete only after formal sign-off by the client.</li>
+</ol>
+
+</div><br/>
+<p>Prepared by:</p>
+<p>Employee Id:</p> 
+<p>Designation:</p>
+
+        <br/>
 <div style='margin-top:50px; text-align:center;'><b>This is a system-generated quotation. Signature is not required.<br/>
 Thank you for your Business<b></div>
 
@@ -1090,10 +1183,10 @@ Thank you for your Business<b></div>
     </html>";
 
 
-            var MailStatus = Cls_util.SendMailViaIIS_htmls("serviceexcellence@groupl.in", Email, "", "", "Ticket Assign-"+ticketNO, htmldesign, "qglnwhqumptscpgf", "smtp.gmail.com", "");
+            var MailStatus = Cls_util.SendMailViaIIS_htmls("serviceexcellence@groupl.in", Email, "", "", "Ticket Assign-" + ticketNO, htmldesign, "qglnwhqumptscpgf", "smtp.gmail.com", "");
             if (MailStatus == "Sent")
             {
-                util.execQuery("update GroupLNewAppTicketMaster set Status='Assign To Vendor', VendorAssignDate=GETDATE() where MannualTicketNo='" + ticketNO+"'", util.strElect);
+                util.execQuery("update GroupLNewAppTicketMaster set Status='Assign To Vendor', VendorAssignDate=GETDATE() where MannualTicketNo='" + ticketNO + "'", util.strElect);
             }
 
             return Json(JsonConvert.SerializeObject(MailStatus));

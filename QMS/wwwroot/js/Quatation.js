@@ -312,7 +312,7 @@ function SaveData() {
         var newdata = JSON.stringify(allitem);
         $.ajax({
             url: myurl + '/CMS/InsertQoutation',
-            data: { data: newdata },
+            data: { data: newdata, ManageFeesId: $("#ManageFeesId").val() },
             type: 'post',
 
             success: function (data) {

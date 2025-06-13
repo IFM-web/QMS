@@ -17,7 +17,7 @@ var itemsquotationTable = $("#itemsquotation");
 
 const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",];
 const teens = ["Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen",];
-const tens = ["","Ten","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety",];
+const tens = ["", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety",];
 const thousands = ["", "Thousand", "Lakh", "Crore"];
 
 function numberToWords(num) {
@@ -94,6 +94,8 @@ function printData() {
         success: function (data) {
             var data1 = JSON.parse(data.data);
             var data2 = JSON.parse(data.data2);
+            var date = new Date(data1[0].Entrydate); 
+
 
             var htmlforprint = `
             <!DOCTYPE html>
@@ -169,7 +171,9 @@ function printData() {
     background: #fff;
   }
  
-
+  ul li{
+        margin: 10px 0;
+  }
 
     @page {
                 size: A4;
@@ -185,6 +189,9 @@ function printData() {
                 footer {
                     display: none;
                 }
+#ButtonId{
+    display:none;
+}
                 
 
 
@@ -192,7 +199,7 @@ function printData() {
             }
 
             header,
-            footer {
+            footer,#ButtonId {
                 display: none;
             }
 
@@ -205,24 +212,45 @@ function printData() {
   }
 
 
-
+   ol li{
+        margin: 10px 0;
+        
+  }
 
     </style>
+       
             </head>
             <body>
+            <button id="ButtonId" onclick="window.print()">Export To PDF</button>
             <div class="content">
                 <div class="logo">
                     <img id="logoimag" src="https://ifm360.in/grouplreportingportal/grouplreportingportal/GroupL.jfif" alt="Group L Logo">
                 </div>
+                <div style="text-align: center; margin-bottom: 20px;">
+GroupL Services Private Limited
+<br/>
+W-31 3rd floor Okhla industrial area phase-2 New Delhi 110020
+</div><br/><br/>
                 <h2>Quotation</h2>
                 <table class="header-table">
                     <tr>
                         <td><strong>Customer Name:</strong> ${data2[0].ClientName}</td>
                         <td><strong>Ticket No.:</strong> ${id}</td>
+                       
                     </tr>
                     <tr>
                         <td><strong>Branch:</strong> ${data2[0].AsmtName}</td>
                         <td><strong>Ticket Date:</strong> ${data2[0].TicketDate}</td>
+                  
+                    </tr>
+                      <tr>
+                        <td></td>
+                        <td><strong>Quotation Date:</strong> ${date.toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                        }) }</td>
+                  
                     </tr>
                 </table>
                 <table>
@@ -244,6 +272,8 @@ function printData() {
             var total = 0;
 
             for (var i = 0; i < data1.length; i++) {
+                
+
                 row += `
                 <tr>
                     <td style='text-align:center'>${i + 1}</td>
@@ -253,7 +283,7 @@ function printData() {
                     <td>${data1[i].ItemQty}</td>
                     <td>${data1[i].ItemUnit}</td>
                     <td>${data1[i].ItemRate}</td>
-                    <td style='text-aligh:right;'>${data1[i].GrossAmt}</td>
+                    <td style='text-aligh:right;'>${data1[i].ItemQty * data1[i].ItemRate}</td>
                 </tr> `;
                 total += data1[i].ItemQty * data1[i].ItemRate;
             }
@@ -273,7 +303,7 @@ function printData() {
                   
                         <tr>
                             <td colspan="6" class="text-right"><strong>Total</strong></td>
-                            <td colspan="2" class="text-right">${total.toFixed(2) }</td>
+                            <td colspan="2" class="text-right">${total.toFixed(2)}</td>
                         </tr>
                         <tr>
                             <td colspan="6" class="text-right"><strong>Management Fee (${MagagePercent})</strong></td>
@@ -281,7 +311,7 @@ function printData() {
                         </tr>
                         <tr>
                             <td colspan="6" class="text-right"><strong>GST 18%</strong></td>
-                            <td colspan="2" class="text-right">${gst.toFixed(2) }</td>
+                            <td colspan="2" class="text-right">${gst.toFixed(2)}</td>
                         </tr>
                         <tr>
                             <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
@@ -291,21 +321,50 @@ function printData() {
                 </table>
                 <p class="amount-words"><strong>Amount in Words:</strong> ${words}</p>
 </div>
+
+<div><br/>
+
+<p><b>Terms and Conditions:</b></p>
+<ol>
+  <li>This quotation is valid for 30 days from the date of issue.</li>
+  <li>Scope of work will be clearly defined, including both inclusions and exclusions.</li>
+  <li>Quantity, unit price, and applicable taxes will be mentioned for each item/service.</li>
+  <li>Payment terms will include advance percentage, balance payment timeline, and any applicable penalties for delay.</li>
+  <li>Taxes and duties (e.g., GST) will be specified as either inclusive or exclusive.</li>
+  <li>Labour charges will either be included or mentioned separately, if applicable.</li>
+  <li>Responsibility for transportation costs will be defined—either borne by the vendor or the client.</li>
+  <li>Delivery will be made within a specified number of working days from order confirmation.</li>
+  <li>Items will be delivered to the location specified by the client.</li>
+  <li>Installation will either be included or quoted separately with relevant terms.</li>
+  <li>Warranty details for materials and/or installation will be provided, including duration and conditions.</li>
+  <li>Client will ensure access to necessary utilities like water, electricity, and site access during execution.</li>
+  <li>All required municipal or statutory permits and approvals shall be obtained by the client.</li>
+  <li>Any variation in quantity or specifications after approval will be subject to revised quotation and client confirmation.</li>
+  <li>Delays caused by force majeure events (e.g., natural disasters, strikes) will not be considered the vendor's responsibility.</li>
+  <li>Work shall be considered complete only after formal sign-off by the client.</li>
+</ol>
+
+</div><br/><p>Prepared by:</p>
+<p>Employee Id:</p> 
+<p>Designation:</p>
+
                 <p class="print-footer text-center">This is a system-generated quotation. Signature is not required.<br><b>Thank you for your Business</b></p>
+              
             </body>
-            </html>`;
+            
+            </html>`
 
 
             var popupwin = window.open();
 
             //popupwin.document.open();
             popupwin.document.write(finalHtml);
-           // popupwin.document.close();
+            // popupwin.document.close();
             var logoImage = popupwin.document.getElementById("logoimag");
             //popupwin.onload = function () {
-              //  popupwin.focus();
-               // popupwin.print();
-               // popupwin.close();
+            //  popupwin.focus();
+            // popupwin.print();
+            // popupwin.close();
             //};
 
 
@@ -319,11 +378,11 @@ function printData() {
 
 
 function BindBranch() {
- 
+
     var tickitnoid = $('#tickitnoid').val();
     $.ajax({
         url: myurl + '/CMS/BindBranch',
-     
+
         type: 'post',
         data: {
             tickitnoid: tickitnoid
@@ -512,13 +571,13 @@ function sendpdf() {
 
 
     $.ajax({
-        url: myurl+'/TicketGenerator/QuotationtoClientPDF1',
-     
+        url: myurl + '/TicketGenerator/QuotationtoClientPDF1',
+
         type: 'post',
         data: {
             tickitnoid: tickitnoid,
             htmldata: '',
-          //  baseUrl: "https://ifm360.in/Ticketing/QuotationtoClientPDF"
+            //  baseUrl: "https://ifm360.in/Ticketing/QuotationtoClientPDF"
         },
         success: function (data) {
             $('#loderid').hide();
@@ -551,15 +610,15 @@ function ApproveandReview(id) {
 
     $.ajax({
         url: myurl + '/QMS/ApprovedAndReview1',
-      
+
         type: 'post',
         data: {
             ticketno: tickitnoid,
             type: id,
-         
+
         },
         success: function (data) {
-            
+
             Swal.fire({
                 title: "success",
                 html: data.message,
@@ -587,15 +646,15 @@ function Execute(id) {
 
     $.ajax({
         url: myurl + '/QMS/Quotationexecute',
-      
+
         type: 'post',
         data: {
             ticketno: tickitnoid,
             type: id,
-         
+
         },
         success: function (data) {
-            
+
             Swal.fire({
                 title: "success",
                 html: data.message,

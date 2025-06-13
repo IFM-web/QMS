@@ -1122,8 +1122,153 @@ function padZero(number, length = 2) {
 
 
 //var GeneretedReceiptNo = GenereteReceiptNo();
-//console.log(formattedDateTime); 
+//console.log(formattedDateTime);
 
 
+
+
+//function exportexcel(FileName) {
+//    var elt = document.getElementById('data-table');
+
+//    // Clone table to avoid altering original
+//    var clonedTable = elt.cloneNode(true);
+//    var rows = clonedTable.querySelectorAll('tr');
+//    let columnsToRemove = new Set();
+
+//    // Identify columns to remove (e.g., "Hid_" or "Action")
+//    rows.forEach(row => {
+//        let cells = Array.from(row.children);
+//        cells.forEach((cell, index) => {
+//            let text = cell.textContent.trim();
+//            if (text.startsWith("Hid_") || text.startsWith("Action")) {
+//                columnsToRemove.add(index);
+//            }
+//        });
+//    });
+
+//    // Remove marked columns
+//    rows.forEach(row => {
+//        let cells = Array.from(row.children);
+//        cells.forEach((cell, index) => {
+//            if (columnsToRemove.has(index)) {
+//                cell.remove();
+//            }
+//        });
+//    });
+
+//    // Convert table to worksheet
+//    var wb = XLSX.utils.book_new();
+//    var ws = XLSX.utils.table_to_sheet(clonedTable);
+
+//    // === Style the header row ===
+//    const range = XLSX.utils.decode_range(ws['!ref']);
+//    for (let C = range.s.c; C <= range.e.c; ++C) {
+//        const cell_address = XLSX.utils.encode_cell({ c: C, r: 0 });
+//        if (!ws[cell_address]) continue;
+
+//        // Add bold + background color
+//        ws[cell_address].s = {
+//            backgroud:"red",
+//            font: { bold: true, color: { rgb: "FFFFFF" } },
+//            fill: { fgColor: { rgb: "4F81BD" } },
+//            alignment: { horizontal: "center" }
+//        };
+//    }
+
+//    // === Auto-fit column width ===
+//    const colWidths = [];
+//    for (let C = range.s.c; C <= range.e.c; ++C) {
+//        let maxLen = 10; // minimum width
+//        for (let R = range.s.r; R <= range.e.r; ++R) {
+//            const cell_address = XLSX.utils.encode_cell({ c: C, r: R });
+//            const cell = ws[cell_address];
+//            if (cell && cell.v) {
+//                const len = cell.v.toString().length;
+//                if (len > maxLen) maxLen = len;
+//            }
+//        }
+//        colWidths.push({ wch: maxLen + 2 });
+//    }
+//    ws['!cols'] = colWidths;
+
+//    // Append to workbook and export
+//    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+//    XLSX.writeFile(wb, FileName + '.xlsx');
+//}
+
+
+
+
+
+function exportexcel(fileName) {
+    const table = document.getElementById("data-table").cloneNode(true);
+    const rows = table.querySelectorAll("tr");
+    const columnsToRemove = new Set();
+
+    // Identify columns to remove (e.g., starts with Hid_ or Action)
+    rows[0].querySelectorAll("th, td").forEach((cell, index) => {
+        const text = cell.textContent.trim();
+        if (text.startsWith("Hid_") || text.startsWith("Action")) {
+            columnsToRemove.add(index);
+        }
+    });
+
+    // Remove marked columns
+    rows.forEach(row => {
+        Array.from(row.children).forEach((cell, idx) => {
+            if (columnsToRemove.has(idx)) cell.remove();
+        });
+    });
+
+    // Convert cleaned table to worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.table_to_sheet(table);
+
+    // Style the header row (only works with xlsx-style)
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+        const addr = XLSX.utils.encode_cell({ c: C, r: 0 });
+        if (ws[addr]) {
+            ws[addr].s = {
+                fill: {
+                    fgColor: { rgb: "4F81BD" },
+                    patternType: "solid"
+                },
+                font: {
+                    bold: true,
+                    color: { rgb: "FFFFFF" }
+                },
+                alignment: {
+                    horizontal: "center"
+                },
+                border: {
+                    top: { style: "thin", color: { rgb: "000000" } },
+                    bottom: { style: "thin", color: { rgb: "000000" } },
+                    left: { style: "thin", color: { rgb: "000000" } },
+                    right: { style: "thin", color: { rgb: "000000" } }
+                }
+            };
+        }
+    }
+
+    // Auto column width
+    const colWidths = [];
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+        let maxLen = 10;
+        for (let R = range.s.r; R <= range.e.r; ++R) {
+            const addr = XLSX.utils.encode_cell({ c: C, r: R });
+            const cell = ws[addr];
+            if (cell && cell.v) {
+                const len = cell.v.toString().length;
+                if (len > maxLen) maxLen = len;
+            }
+        }
+        colWidths.push({ wch: maxLen + 2 });
+    }
+    ws['!cols'] = colWidths;
+
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    XLSX.writeFile(wb, fileName + ".xlsx");
+}
 
 

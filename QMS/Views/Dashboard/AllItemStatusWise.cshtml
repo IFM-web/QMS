@@ -1,0 +1,163 @@
+﻿@{
+    ViewData["Title"] = "All Item Status Wise";
+    Layout = "~/Views/Shared/_MainLayout3.cshtml";
+
+}
+
+
+
+<style>
+
+    .three-body {
+        --uib-size: 35px;
+        --uib-speed: 0.8s;
+        --uib-color: #5D3FD3;
+        position: relative;
+        display: inline-block;
+        height: var(--uib-size);
+        width: var(--uib-size);
+        animation: spin78236 calc(var(--uib-speed) * 2.5) infinite linear;
+    }
+
+    .three-body__dot {
+        position: absolute;
+        height: 100%;
+        width: 70%;
+    }
+
+        .three-body__dot:after {
+            content: '';
+            position: absolute;
+            height: 0%;
+            width: 100%;
+            padding-bottom: 100%;
+            background-color: var(--uib-color);
+            border-radius: 50%;
+        }
+
+        .three-body__dot:nth-child(1) {
+            bottom: 5%;
+            left: 0;
+            transform: rotate(60deg);
+            transform-origin: 50% 85%;
+        }
+
+            .three-body__dot:nth-child(1)::after {
+                bottom: 0;
+                left: 0;
+                animation: wobble1 var(--uib-speed) infinite ease-in-out;
+                animation-delay: calc(var(--uib-speed) * -0.3);
+            }
+
+        .three-body__dot:nth-child(2) {
+            bottom: 5%;
+            right: 0;
+            transform: rotate(-60deg);
+            transform-origin: 50% 85%;
+        }
+
+            .three-body__dot:nth-child(2)::after {
+                bottom: 0;
+                left: 0;
+                animation: wobble1 var(--uib-speed) infinite calc(var(--uib-speed) * -0.15) ease-in-out;
+            }
+
+        .three-body__dot:nth-child(3) {
+            bottom: -5%;
+            left: 0;
+            transform: translateX(116.666%);
+        }
+
+            .three-body__dot:nth-child(3)::after {
+                top: 0;
+                left: 0;
+                animation: wobble2 var(--uib-speed) infinite ease-in-out;
+            }
+
+  
+
+
+
+
+</style>
+<div class=" container-fluid" id="bdy">
+    <div class="card shadow mt-4">
+        <div class="card-header py-3">
+            <h6 id="header" class="m-0 font-weight-bold text-primary ">Ticket List</h6>
+        </div>
+        <div class="row px-3">
+            <input type="hidden" id="status" value="@ViewBag.status" />
+        </div>
+        <div class="col-md-2 mt-2" >
+            <button class="btn btn-primary" onclick="execl()">Export To Excel</button>
+        </div>
+        <div class="col-md-12 mt-3">
+            <div class="table-data">
+                <div id="printdiv"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+
+<script src="~/js/Master.js" defer></script>
+<script src="~/js/xlxs.full.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+ 
+<script src="https://unpkg.com/xlsx-populate/browser/xlsx-populate.min.js"></script>
+
+<script >
+ 
+    function getURL() {
+        const hostname = window.location.hostname;
+        if (hostname == "localhost") {
+            return '';
+        }
+        else {
+            return '/Ticketing';
+        }
+
+    };
+
+    $(document).ready(function () {
+        ShowItems();
+    })
+
+    var myurl = getURL();
+    function ShowItems() {
+      
+        var status = document.getElementById("status").value;
+            
+        $.ajax({
+            url: myurl+'/Dashboard/AllItemStatus',
+            type:'get',
+            data: {status:status},
+            success:(data)=>{
+                console.log(data);
+                var data = JSON.parse(data);
+                CreateTableFromArray(data, 'printdiv')
+            },
+            error: (data) => {
+
+            }
+        })
+
+        }
+
+        function execl(){
+        exportexcel("Ticket List")
+        }
+
+</script>
+
+

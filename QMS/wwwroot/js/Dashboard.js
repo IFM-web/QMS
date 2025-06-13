@@ -84,6 +84,7 @@ function dashboardd() {
                         "<td>" + parseInt(i + 1) + "</td>" +
                         "<td class='ClientName'>" + (data[i].ClientName || "") + "</td>" +
                         "<td class='AsmtName'>" + (data[i].AsmtName || "") + "</td>" +
+                        "<td class='Hrlocationdesc'>" + (data[i].Hrlocationdesc || "") + "</td>" +
                         "<td class='TicketType'>" + (data[i].TicketType || "") + "</td>" +
                         "<td class='CategoryType'>" + (data[i].CategoryType || "") + "</td>" +
                         "<td class='MannualTicketNo'>" + (data[i].MannualTicketNo || "") + "</td>" +
@@ -128,7 +129,6 @@ function dashboardd() {
 
 
 
-
 function BindCustomer(id) {
 
     $.ajax({
@@ -141,7 +141,7 @@ function BindCustomer(id) {
             var divid = $("#custmernameid");
             var data = JSON.parse(data);
             divid.empty();
-            divid.append('<Option value="All">All</Option>');
+            divid.append('<Option value>Select</Option>');
             for (var i = 0; i < data.length; i++) {
 
                 divid.append(`<option value="${data[i].ClientCode}">${data[i].ClientName}</option>`);
@@ -153,6 +153,55 @@ function BindCustomer(id) {
     });
 }
 
+
+function bindRegion(id) {
+
+    $.ajax({
+        url: myurl + '/Home/bindRegion',
+        type: 'get',
+        data: {
+            id: id
+        },
+        success: function (data) {
+            var divid = $("#Region");
+            var data = JSON.parse(data);
+            divid.empty();
+            divid.append('<Option value>Select</Option>');
+            for (var i = 0; i < data.length; i++) {
+
+                divid.append(`<option value="${data[i].HrLocationCode}">${data[i].HrLocationDesc}</option>`);
+            }
+        },
+        error: function (error) {
+            console.log('Error loading customer data:', error);
+        }
+    });
+}
+
+function bindBranch() {
+
+    $.ajax({
+        url: myurl + '/Home/bindBranch',
+        type: 'get',
+        data: {
+            id: $("#companynameid").val(),
+            locid: $("#Region").val(),
+        },
+        success: function (data) {
+            var divid = $("#Branch");
+            var data = JSON.parse(data);
+            divid.empty();
+            divid.append('<Option value>Select</Option>');
+            for (var i = 0; i < data.length; i++) {
+
+                divid.append(`<option value="${data[i].LocationAutoID}">${data[i].LocationCode}</option>`);
+            }
+        },
+        error: function (error) {
+            console.log('Error loading customer data:', error);
+        }
+    });
+}
 
 
 
@@ -264,7 +313,7 @@ function BindTicketAssigndata() {
                 for (var i = 0; i < data.length; i++) {
                     row += "<tr id='row" + i + "'>" +
                         "<td>" + parseInt(i + 1) + "</td>" +
-                        "<td class='ClientCode'>" + data[i].ClientCode + "</td>" +
+                        "<td class='HrLocationDesc'>" + data[i].HrLocationDesc + "</td>" +   "<td class='ClientCode'>" + data[i].ClientCode + "</td>" +
                         "<td class='AsmtId'>" + data[i].AsmtId + "</td>" +
                         "<td class='MannualTicketNo'>" + data[i].MannualTicketNo + "</td>" +
                         "<td class='TicketType'>" + data[i].TicketType + "</td>" +

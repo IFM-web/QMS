@@ -14,19 +14,74 @@ var myurl = getURL();
 
 
 $(document).ready(function () {
+  
     binddashboard()
 })
 
+function bindRegion(id) {
+
+    $.ajax({
+        url: myurl + '/Home/bindRegion',
+        type: 'get',
+        data: {
+            id: id
+        },
+        success: function (data) {
+            var divid = $("#Region");
+            var data = JSON.parse(data);
+            divid.empty();
+            divid.append('<Option value>Select</Option>');
+            for (var i = 0; i < data.length; i++) {
+
+                divid.append(`<option value="${data[i].HrLocationCode}">${data[i].HrLocationDesc}</option>`);
+            }
+        },
+        error: function (error) {
+            console.log('Error loading customer data:', error);
+        }
+    });
+}
+
+function bindBranch() {
+
+    $.ajax({
+        url: myurl + '/Home/bindBranch',
+        type: 'get',
+        data: {
+            id: $("#companynameid").val(),
+            locid: $("#Region").val(),
+        },
+        success: function (data) {
+            var divid = $("#Branch");
+            var data = JSON.parse(data);
+            divid.empty();
+            divid.append('<Option value>Select</Option>');
+            for (var i = 0; i < data.length; i++) {
+
+                divid.append(`<option value="${data[i].LocationAutoID}">${data[i].LocationCode}</option>`);
+            }
+        },
+        error: function (error) {
+            console.log('Error loading customer data:', error);
+        }
+    });
+}
 
 
 
 function binddashboard() {
-    var companyname= $("#companynameid").val();
+    var companyname = $("#companynameid").val();
+    var zone = $("#Region").val();
+    var branch = $("#Branch").val();
+ 
+    bindRegion(companyname)
     $.ajax({
         url: myurl+'/TicketGenerator/binddashboard',
         type: 'post',
         data: {
-            companynameid: companyname
+            companynameid: companyname,
+            zone: zone,
+            branch: branch,
 
         },
         success: function (data) {
