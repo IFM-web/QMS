@@ -4,12 +4,12 @@ namespace ifm360Reports.Models
 {
     public class Adm_User
     {
+        [Display(Name = "LoginId")]
+        [Required(ErrorMessage = "LoginId is mandatory")]
+        public string uname { get; set; }= string.Empty;
+        [Required(ErrorMessage = "Password is mandatory")]
+        [Display(Name = "Password")]
+        public string pwd { get; set; }=string.Empty;
        
-        public string uname { get; set; }
-        public string pwd { get; set; }
-        public string deviceid { get; set; }
-        public string latitude { get; set; }
-        public string longitude { get; set; }
-        public string address { get; set; }
     }
 }

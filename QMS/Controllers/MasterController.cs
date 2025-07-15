@@ -107,7 +107,7 @@ namespace QMS.Controllers
 
        public JsonResult GetItem(string tickitno)
         {
-            var ds = Util.Fill("select ItemCode,ItemName,ItemUnit,ItemRate,ItemQty,GrossAmt from AddQoutaion where TicketNo='"+tickitno+"' ", Util.strElect);
+            var ds = Util.Fill("select ItemCode,ItemName,ItemUnit,ItemRate,ItemQty,isnull(GrossAmt,0.00) as GrossAmt from AddQoutaion where TicketNo='" + tickitno+"' ", Util.strElect);
 
             return Json(JsonConvert.SerializeObject(ds.Tables[0]));
         }

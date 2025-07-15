@@ -55,17 +55,29 @@
                             <td>@row["ItemCode"]</td>
                             <td>@row["ItemName"]</td>
                             <td>@row["ItemUnit"]</td>
+                          
                             <td>
                                     <input type="text" value="" id="rate" class="rate-input" oninput="changeamt(this)" />
 
                             </td>
                             <td class="qty">@row["ItemQty"]</td>
                             <td class="totalamt">
-                               
+                             
                             </td>
                         </tr>
+                       
                         count++;
                     }
+                        <tr>
+                            <td colspan="6" align="right"><b>Total Amount</b></td>
+                            <td id="totalAmt">0.00</td>
+                        </tr> <tr>
+                            <td colspan="6" align="right"><b>GST (18%)</b></td>
+                            <td id="GSTamt">0.00</td>
+                        </tr> <tr>
+                            <td colspan="6" align="right"><b>Grand Total Amount</b></td>
+                            <td id="Grandtotal">0.00</td>
+                        </tr>
                 </tbody>
             </table>
             <button class="btn btn-success" onclick="Update()">Update</button>

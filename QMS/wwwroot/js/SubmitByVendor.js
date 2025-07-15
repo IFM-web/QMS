@@ -1,15 +1,43 @@
-﻿function changeamt(input) {
-    var $row = $(input).closest("tr");
-    var qty = parseFloat($row.find(".qty").text());
-    var rate = parseFloat($(input).val());
+﻿$(document).ready(() => {
+    SumTotal()
+})
+  function changeamt(input) {
+    // Allow only numbers and one decimal point
+    let val = $(input).val().replace(/[^0-9.]/g, '');            // Remove non-numeric except dot
+    val = val.replace(/^([^.]*\.)|\./g,'$1');                   // Allow only one dot
+    $(input).val(val);                                           // Update input box
 
-    if (!isNaN(qty) && !isNaN(rate)) {
-        var totalAmt = qty * rate;
-        $row.find(".totalamt").text(totalAmt.toFixed(2));
-    } else {
-        $row.find(".totalamt").text("Invalid");
-    }
+    let $row = $(input).closest("tr");
+    let qty = parseFloat($row.find(".qty").text());              // Use .val() if qty is input
+    let rate = parseFloat(val);
+
+      if (!isNaN(qty) && !isNaN(rate)) {
+          let totalAmt = qty * rate;
+          $row.find(".totalamt").text(totalAmt.toFixed(2));
+      } else {
+          $row.find(".totalamt").text('')
+      }
+      SumTotal()
 }
+function SumTotal() {
+    let sum = 0.00;
+
+    $("#quotationTableBody tr").each(function (index, row) {
+        let amtText = $(row).find(".totalamt").text();
+        let amt = parseFloat(amtText);
+        if (!isNaN(amt)) {
+            sum += amt;
+        }
+    });
+    var totalamout = sum;
+    var gstamount = sum * 18 / 100;
+    var GrandTotal = totalamout + gstamount;
+    $("#totalAmt").text(totalamout.toFixed(2))
+    $("#GSTamt").text(gstamount.toFixed(2))
+    $("#Grandtotal").text(GrandTotal.toFixed(2))
+}
+
+
 function validateTableInputs() {
     var isValid = true;
 
@@ -42,7 +70,7 @@ function getURL() {
 
 var myurl = getURL();
 function Update() {
-    if (validateTableInputs()) {
+   
     
      
    
@@ -91,9 +119,7 @@ function Update() {
     } else {
         alert("Please Select Any Item");
     }
-    } else {
-        alert("Please enter only numbers in all fields.");
-    }
+    
 
 
 }
@@ -111,7 +137,7 @@ function UpdateReview() {
             if ($(row).find('#Id').text() != '') {
                 Items.Id = $(row).find("#Id").text();
                 Items.rate = $(row).find('#rate').val() || 0;
-                Items.toatal = $(row).find('.totalamt').text() || 0;
+                Items.toatal = $(row).find('.totalamt').text().trim() || 0;
 
                 itemsArray.push(Items);
             }

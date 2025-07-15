@@ -13,16 +13,16 @@
         padding: 10px;
     }
 
-  
+
 
     .narrow-table1 {
         width: 50%;
     }
 
     /* .card-header {
-                background-color: #C62828;
-                color: white;
-            } */
+                    background-color: #C62828;
+                    color: white;
+                } */
 
 </style>
 
@@ -54,10 +54,10 @@
                 <div class="col-md-4 mb-2" style="    margin-top: 24px;">
                     <button type="button" id="generatePDF" class="btn btn-dark ">Create Pdf</button>
                 </div>
-                <div class="col-12 d-flex" id="ticketdetails">
+                <div class="col-12 d-flex" id="ticketdetails" >
 
                     <!-- Ticket Details Section -->
-                    <div class="card mb-4 px-md-0 flex-grow-1 border-0 ">
+                    <div class="card mb-4 px-md-0 flex-grow-1 border-0 d-none" id="MainDiv" >
 
 
                         <div class="row mb-3 ticket-container m-3">
@@ -66,12 +66,13 @@
                             <div class="row signature-container justify-content-center text-center">
                                 <img id="Clogo" src="~/groupl.jfif" alt="GroupL Logo" style="height: 150px; width: 250px;margin-bottom: -22px;">
                             </div>
-                          
+
                             <div style="text-align: center; margin-bottom: 20px;">
                                 GroupL Services Private Limited
                                 <br />
                                 W-31 3rd floor Okhla industrial area phase-2 New Delhi 110020
                             </div><br /><br />
+                            <p class="text-center"><b>Work Completion Report (WCR)</b></p>
                             <div class="col-12 d-flex px-md-0">
                                 <div class="card flex-grow-1 border-0 ">
                                     <div class="card-header text-white  bg-danger">
@@ -138,12 +139,12 @@
                                             </table>
 
                                             @* <div class="text-right mt-3" id="tiiik1" style="display:none">
-                                                <div class="signature-box">
-                                                    <img id="tikit1image" src="../QuotationPDF/download1.png" alt="Ticket Signature" style=" height: 124px;
-    width: 194px;
-    margin-top: -101px;">
-                                                </div>
-                                                <p style="margin-right: 43px">Before Image </p>
+                                            <div class="signature-box">
+                                            <img id="tikit1image" src="../QuotationPDF/download1.png" alt="Ticket Signature" style=" height: 124px;
+                                            width: 194px;
+                                            margin-top: -101px;">
+                                            </div>
+                                            <p style="margin-right: 43px">Before Image </p>
                                             </div> *@
 
                                         </div>
@@ -169,10 +170,10 @@
                                                         <th>S.No</th>
                                                         <th>Item Code</th>
                                                         <th>Item Name</th>
-                                                      @*   <th>GST</th> *@
+                                                        @*   <th>GST</th> *@
                                                         <th>Qty</th>
                                                         <th>Unit</th>
-                                                      @*   <th>Rate</th>
+                                                        @*   <th>Rate</th>
                                                         <th>Gross Amount</th> *@
                                                         <th style="display:none">Action</th>
                                                     </tr>
@@ -212,59 +213,111 @@
 
                                             </table>
 
-                                            @* <div class="text-right mt-3" id="divclosutre" style="display:none">
-                                                <img id="Clouserimage" src="~/QuotationPDF/download1.png" alt="Ticket Signature"
-                                                     style="
-    height: 118px;
-    width: 194px;
-    margin-top: -93px;"> <p style="margin-right: 43px;">Ticket Closure Image</p>
-                                            </div> *@
+                                          
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                       
+
+
+
+                            <div id="signature">
+                                <div style="display: flex; justify-content: space-evenly; align-items: center;">
+
+
+                                    <div style="text-align: center; margin: 20px;">
+                                        <div style="border: 1px solid black; width: 300px; height: 200px;    overflow: hidden;">
+
+
+
+                                            <img id="staffSignature" style="width: 300px; " src="" alt="Visit Image" />
+
+
+                                        </div>
+                                        <p style="margin-top: 10px;"><b>Closure Staff Signature</b></p>
+                                    </div>
+
+                                    <!-- Client Signature -->
+                                    <div style="text-align: center; margin: 20px;">
+                                        <div style="border: 1px solid black; width: 300px; height: 200px;overflow:hidden">
+                                            <img id="clientSignature" style="width: 300px;" src="" alt="Visit Image" />
+                                        </div>
+                                        <p style="margin-top: 10px;"><b>Ticket Closure Client Signature</b></p>
+                                    </div>
+
+
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                 
+
+               
+
+                <div class="row m-3">
+
+
+
+
+
+
+                    <div id="signature">
+                        <div style="display: flex; justify-content: space-evenly; align-items: center;">
+
+
+                            <div style="text-align: center; margin: 20px;">
+                                <div style="border: 1px solid black; width: 300px; height: 200px;    overflow: hidden;">
+
+
+
+                                    <img id="staffSignature" style="width: 200px; transform: rotate(-20deg);" src="~/stamp.jfif" alt="Visit Image" />
+
+
+                                </div>
+                                <p style="margin-top: 10px;"><b>Group<span style="color:red">L</span></b></p>
+                            </div>
+
+                            <!-- Client Signature -->
+                            <div style="text-align: center; margin: 20px;">
+                                <div style="border: 1px solid black; width: 300px; height: 200px;">
+                                </div>
+                                <p style="margin-top: 10px;"><b>Branch Stamp</b></p>
                             </div>
 
 
 
 
-                            <div class="d-flex mt-5">
-                                <div class="row mb-3 signature-container justify-content-center text-center">
-                                    <!-- Staff Signature -->
-                                    <div class="col-md-3" style="border: 1px solid #000; padding: 10px;">
-                                        <div class="signature-box mx-auto" width="350px">
-                                            <img id="staffSignature" src="" style="width: -webkit-fill-available" alt="Staff Signature">
-                                        </div>
-                                        <div class="signature-label text-center" style="margin-top: 5px;">Closure Staff Signature </div>
-                                    </div>
-                                    <div class="col-md-4"></div>
-                                    <!-- Client Signature -->
-                                    <div class="col-md-4" style="border: 1px solid #000; padding: 10px; ">
-                                        <div class="signature-box mx-auto" width="350px">
-                                            <img id="clientSignature" style="width: -webkit-fill-available" alt="Client Signature">
-                                        </div>
-                                        <div class="signature-label text-center" style="margin-top: 5px;">Ticket Closure Client Signature</div>
-                                    </div>
-                                </div>
-                            </div> 
-
-
-
                         </div>
-
-
-
-
-
-
                     </div>
+
                 </div>
 
 
+
+            <p style="margin:0;">PreparedBy:</p>
+            <p style="margin:0;">Employee Id:</p>
+            <p style="margin:0 ;">Designation:</p>
+            <p style="margin:0 ;">WCR Generation Date:</p>
+            <p class="text-center">
+                <b>
+                    <br />
+                    If any query feel free to contact with us at first-impressions@groupl.in or contact us at 8100432758
+                </b>
+            </p>
+            <p class="text-center"><b>Thank you for choosing Group<span style="color:red">L</span></b></p>
+        </div>
+            </div>
             </div>
         </div>
 
     </div>
-</div>
+
+
+    </div>
+
 
 
 

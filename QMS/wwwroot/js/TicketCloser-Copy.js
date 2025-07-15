@@ -420,14 +420,6 @@ function TicketClosureBind(tickitnoid) {
             else {
                 const myDiv = document.getElementById('ticketdetails');
                 myDiv.style.setProperty('display', 'none', 'important');
-
-                //Swal.fire({
-                //    title: "Error !",
-                //    text: "Review Quatation not found",
-                //    icon: "Error"
-                //});
-
-
             }
            
         },
@@ -451,14 +443,19 @@ function TicketClosureBinddd(ticketno) {
 
             var data = JSON.parse(data);
 
+            if (data.length == 0) {
+                return
+            }
+           
 
+            $('#MainDiv').removeClass('d-none');
             $('#tr').show();
             $('#divclosutre').show();
             $('#tiiik1').show();
             /* $('#th1').html(1);*/
             $('#th2').html(data[0].Observation);
             $('#th3').html(data[0].Description);
-            $('#th4').html(data[0].EmpName);
+            $('#th4').html(data[0].AssignedEmpName + ' (' + data[0].AssignedEmpID +')');
             var noImage =myurl + "/NoImage.jpg";
 
             var row = "";

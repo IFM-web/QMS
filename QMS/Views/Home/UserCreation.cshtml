@@ -1,0 +1,211 @@
+﻿@{
+    ViewData["Title"] = "All Item Status Wise";
+    Layout = "~/Views/Shared/_MainLayout3.cshtml";
+
+}
+
+
+
+<style>
+
+    .three-body {
+        --uib-size: 35px;
+        --uib-speed: 0.8s;
+        --uib-color: #5D3FD3;
+        position: relative;
+        display: inline-block;
+        height: var(--uib-size);
+        width: var(--uib-size);
+        animation: spin78236 calc(var(--uib-speed) * 2.5) infinite linear;
+    }
+
+    .three-body__dot {
+        position: absolute;
+        height: 100%;
+        width: 70%;
+    }
+
+        .three-body__dot:after {
+            content: '';
+            position: absolute;
+            height: 0%;
+            width: 100%;
+            padding-bottom: 100%;
+            background-color: var(--uib-color);
+            border-radius: 50%;
+        }
+
+        .three-body__dot:nth-child(1) {
+            bottom: 5%;
+            left: 0;
+            transform: rotate(60deg);
+            transform-origin: 50% 85%;
+        }
+
+            .three-body__dot:nth-child(1)::after {
+                bottom: 0;
+                left: 0;
+                animation: wobble1 var(--uib-speed) infinite ease-in-out;
+                animation-delay: calc(var(--uib-speed) * -0.3);
+            }
+
+        .three-body__dot:nth-child(2) {
+            bottom: 5%;
+            right: 0;
+            transform: rotate(-60deg);
+            transform-origin: 50% 85%;
+        }
+
+            .three-body__dot:nth-child(2)::after {
+                bottom: 0;
+                left: 0;
+                animation: wobble1 var(--uib-speed) infinite calc(var(--uib-speed) * -0.15) ease-in-out;
+            }
+
+        .three-body__dot:nth-child(3) {
+            bottom: -5%;
+            left: 0;
+            transform: translateX(116.666%);
+        }
+
+            .three-body__dot:nth-child(3)::after {
+                top: 0;
+                left: 0;
+                animation: wobble2 var(--uib-speed) infinite ease-in-out;
+            }
+
+</style>
+<div class=" container-fluid" id="bdy">
+    <div class="card shadow mt-4">
+        <div class="card-header py-3">
+            <h6 id="header" class="m-0 font-weight-bold text-primary ">User Creation</h6>
+        </div>
+        <div class="
+card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>LoginId</label>
+                        <input type="text" class="form-control mandatory" name="LoginId" value="" id="LoginId" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>User Name</label>
+                        <input type="text" class="form-control mandatory" name="User Name" value="" id="UserName" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="text" class="form-control mandatory" name="Password" value="" id="Password" />
+                    </div>
+                </div>
+
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Designation</label>
+                        <input type="text" class="form-control mandatory" name="Designation" value="" id="Designation" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Company </label>
+                        <div class="custom-multiselect w-100 position-relative">
+                            <input type="hidden" class="form-control mandatory" id="customSelect" name="Company" placeholder="Select..." readonly>
+                            <input type="text" class="form-control " id="customSelectName"  placeholder="Select..." readonly>
+
+                            <div class="custom-multiselect-menu border rounded bg-white position-absolute mt-1 w-100" id="checkboxContainer" style="display: none; max-height: 200px; overflow-y: auto;">
+                                @if(ViewBag.companyname != null)
+                                {
+                                    foreach (var e in ViewBag.companyname as List<SelectListItem>)
+                                    {
+                                        <div class="form-check ms-2">
+
+                                            <input class="form-check-input chkItem" type="checkbox" value="@e.Value" id="chk-@e.Value">
+                                            <label class="form-check-label" id="chk-@e.Value">@e.Text</label>
+                                        </div>
+                                    }
+                                }
+                                
+                            </div>
+                        </div>
+
+
+                        @* <select  class="form-control mandatory" name="Company" id="Company">
+                            <option value="0"> Select</option>
+                            @if (ViewBag.companyname != null)
+                            {
+
+
+
+                                foreach (var item in ViewBag.companyname as List<SelectListItem>)
+                                {
+                                    <option value="@item.Value"> @item.Text</option>
+                                }
+                            }
+                        </select> *@
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Region</label>
+                        <div class="custom-multiselect2 w-100 position-relative">
+                            <input type="text" name="Region" class="form-control mandatory" id="customSelect2" placeholder="Select..." readonly>
+
+                            <div class="custom-multiselect2-menu border rounded bg-white position-absolute mt-1 w-100" id="checkboxContainer2" style="display: none; max-height: 200px; overflow-y: auto;z-index:9999">
+                                @if (ViewBag.Region != null)
+                                {
+                                    foreach (var e in ViewBag.Region as List<SelectListItem>)
+                                    {
+                                        <div class="form-check ms-2">
+
+                                            <input class="form-check-input chkItem2" type="checkbox" value="@e.Value" id="chk-@e.Value">
+                                            <label class="form-check-label" for="chk-@e.Value">@e.Text</label>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-4 mt-2 justify-content-evenly">
+            
+            <input type="checkbox" checked id="Status">Status
+            <button class="btn btn-primary" onclick="Save()">Save</button>
+        </div>
+        <div class="col-md-12 mt-3">
+            <div class="table-data">
+                <div id="printdiv"></div>
+            </div>
+        </div>
+    </div>
+    
+
+</div>
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+
+<script src="~/js/Master.js" defer></script>
+<script src="~/js/xlxs.full.min.js"></script>
+<script src="~/js/UserCreatetion.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script src="https://unpkg.com/xlsx-populate/browser/xlsx-populate.min.js"></script>
+
+
+

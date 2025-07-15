@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "All Item Status Wise";
+    ViewData["Title"] = "Ticket Status Wise";
     Layout = "~/Views/Shared/_MainLayout3.cshtml";
 
 }
@@ -23,9 +23,6 @@
         position: absolute;
         height: 100%;
         width: 70%;
-    }
-    #printdiv{
-          overflow-x: scroll;
     }
 
         .three-body__dot:after {
@@ -76,23 +73,47 @@
                 left: 0;
                 animation: wobble2 var(--uib-speed) infinite ease-in-out;
             }
-
-  
-
-
-
-
+ table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: center;
+        }
 </style>
-<div class=" container-fluid" id="bdy" style="overflow: scroll;">
+<div class=" container-fluid" id="bdy">
     <div class="card shadow mt-4">
         <div class="card-header py-3">
-            <h6 id="header" class="m-0 font-weight-bold text-primary ">Ticket List</h6>
+            <h6 id="header" class="m-0 font-weight-bold text-primary ">Ticket Details Status </h6>
         </div>
         <div class="row px-3">
-            <input type="hidden" id="status" value="@ViewBag.status" />
+       
         </div>
-        <div class="col-md-2 mt-2" >
-            <button class="btn btn-primary" onclick="execl()">Export To Excel</button>
+         <div class="col-md-4">
+             <div class="form-group">
+                 <label>Ticket No</label>
+                 <select id="ticketno" onchange="Ticket(this.value)" class="form-control" >
+                    <option value="0">Select</option>
+                    @if (ViewBag.Ticket != null){
+                        foreach (var e in ViewBag.Ticket as List<SelectListItem>){
+                            <option value="@e.Value">@e.Text</option>
+                            }
+                    }
+
+                 </select>
+             </div>
+
+         </div>
+
+        <div class="col-md-2 mt-2">
+            @* <button class="btn btn-primary" onclick="execl()">Export To Excel</button> *@
         </div>
         <div class="col-md-12 mt-3">
             <div class="table-data">
@@ -114,16 +135,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
 <script src="~/js/Master.js" defer></script>
+<script src="~/js/Reports/TicketStatusWise.js" defer></script>
 <script src="~/js/xlxs.full.min.js"></script>
-<script src="~/js/Reports/StatusWiseList.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
- 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <script src="https://unpkg.com/xlsx-populate/browser/xlsx-populate.min.js"></script>
 
-<script >
- 
-   
-
+<script>
+    $("#ticketno").select2();
+  
+    
+    
 </script>
 
 

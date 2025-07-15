@@ -1252,20 +1252,20 @@ function exportexcel(fileName) {
     }
 
     // Auto column width
-    const colWidths = [];
-    for (let C = range.s.c; C <= range.e.c; ++C) {
-        let maxLen = 10;
-        for (let R = range.s.r; R <= range.e.r; ++R) {
-            const addr = XLSX.utils.encode_cell({ c: C, r: R });
-            const cell = ws[addr];
-            if (cell && cell.v) {
-                const len = cell.v.toString().length;
-                if (len > maxLen) maxLen = len;
-            }
-        }
-        colWidths.push({ wch: maxLen + 2 });
-    }
-    ws['!cols'] = colWidths;
+    //const colWidths = [];
+    //for (let C = range.s.c; C <= range.e.c; ++C) {
+    //    let maxLen = 0;
+    //    for (let R = range.s.r; R <= range.e.r; ++R) {
+    //        const addr = XLSX.utils.encode_cell({ c: C, r: R });
+    //        const cell = ws[addr];
+    //        if (cell && cell.v) {
+    //            const len = cell.v.toString().length;
+    //            if (len > maxLen) maxLen = len;
+    //        }
+    //    }
+    //    colWidths.push({ wch: maxLen + 2 });
+    //}
+    //ws['!cols'] = colWidths;
 
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
     XLSX.writeFile(wb, fileName + ".xlsx");

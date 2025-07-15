@@ -60,7 +60,7 @@
                 <div class="form-group">
                     <label for="companyname">Company Name</label>
                     <select id="companynameid" class="form-control mandatory" name="Company Name" onchange="bindRegion(this.value)">
-                        <option value="0">select</option>
+                       
                         @if (ViewBag.companyname != null)
                         {
                             foreach (var item in ViewBag.companyname as List<SelectListItem>)
@@ -75,7 +75,7 @@
                 <div class="form-group">
                     <label for="Region">Region Name</label>
                     <select id="Region" class="form-control mandatory" name="Region Name" onchange="bindBranch(this.value)">
-                        <option value="0">select</option>
+                        <option value="All">All</option>
                         @*  @if (ViewBag.companyname != null)
                         {
                         foreach (var item in ViewBag.companyname as List<SelectListItem>)
@@ -90,7 +90,7 @@
                 <div class="form-group">
                     <label for="Branch">Branch Name</label>
                     <select id="Branch" class="form-control mandatory" name="Branch Name" onchange="BindCustomer(this.value)">
-                        <option value="0">select</option>
+                        <option value="All">All</option>
                         @*  @if (ViewBag.companyname != null)
                         {
                         foreach (var item in ViewBag.companyname as List<SelectListItem>)
@@ -106,6 +106,7 @@
             <div class="col-md-4 mb-2">
                 <label for="custmername">Custmer Name</label>
                 <select id="custmernameid" class="form-control" name="custmernameid" onchange="BindSite(this.value)">
+                    <option value="All">All</option>
                 </select>
             </div>
             <div class="col-md-4 mb-2">
@@ -183,10 +184,12 @@
 
             <div mb-4>
                 <button id="btnsave" type="button" onclick="dashboardd()" class="btn btn-dark w-10 mt-3 text-center">View Ticket</button>
+                <button id="btnsave" type="button" onclick="exportexcel('TicketDashboard')" class="btn btn-dark w-10 mt-3 text-center">Export To Excel</button>
             </div>
+       
             <div>
 
-                <table style="overflow:scroll" class="custom-table mt-3">
+                <table id="data-table" style="overflow:scroll" class="custom-table mt-3">
                     <thead>
                         <tr>
                     <th>S.No</th>
@@ -225,7 +228,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
-
+<script src="~/js/xlxs.full.min.js"></script>
 <script src="~/js/Dashboard.js"></script>
 <script src="~/js/Master.js"></script>
 

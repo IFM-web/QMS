@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "ApprovedAndReview";
+    Layout = null;
+}
+
+<div id="biddetails">
+ 
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(()=>{
+        var message = '@ViewBag.mass';
+        console.log(message)
+        if (message)
+
+            Swal.fire({
+                title: "success",
+                html: message,
+                icon: "success",
+                confirmButtonText: 'OK'
+            })
+        setTimeout(() => {
+           // location.href = 'https://localhost:7015/Home/Login'
+            window.close();
+        }, 1000);
+
+
+    })
+    
+
+</script>
+
+
+
+

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Syncfusion.Compression;
-
+using System.Drawing;
+using Microsoft.AspNetCore.Mvc.Filters;
+using QMS.AuthFilter;
 namespace QMS.Controllers
 {
     public class DashboardController : Controller
@@ -13,17 +15,18 @@ namespace QMS.Controllers
             return View();
         }
 
-
-        public IActionResult AllItemStatusWise(string id)
+        [AuthenticationFilter]
+        public IActionResult AllItemStatusWise()
         {
-            ViewBag.status = id;
             return View();
         }
-        public JsonResult AllItemStatus(string status)
+        public JsonResult AllItemStatus(string status,string CompnayCode,string Region,string Branch,string Customer,string TicketType)
         {
-            var ds = util.Fill("exec GrouplNewAppTicketListStatusWise '" + status + "' ", util.strElect);
+            var ds = util.Fill("exec GrouplNewAppTicketListStatusWise '" + status + "',@CompanyCode='"+CompnayCode+ "',@Region='"+Region+ "',@Branch='"+Branch+ "',@Customer='"+Customer+ "',@TicketType='"+ TicketType + "' ", util.strElect);
             return new JsonResult(JsonConvert.SerializeObject( ds.Tables[0]));
         }
+
+
 
 
 

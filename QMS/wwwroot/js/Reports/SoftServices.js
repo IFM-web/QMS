@@ -1,5 +1,6 @@
 $(document).ready(() => {
     var type = $("#txttype").val()
+    
     const formattedDate = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
     const toDate = new Date(Date.now()).toISOString().split('T')[0];
     document.getElementById('fromdate').value = formattedDate;

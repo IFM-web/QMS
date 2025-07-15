@@ -344,9 +344,9 @@ W-31 3rd floor Okhla industrial area phase-2 New Delhi 110020
   <li>Work shall be considered complete only after formal sign-off by the client.</li>
 </ol>
 
-</div><br/><p>Prepared by:</p>
-<p>Employee Id:</p> 
-<p>Designation:</p>
+</div><br/><p>Prepared by: ${data2[0].Preparedby}</p>
+<p>Employee Id: ${data2[0].LoginId}</p> 
+<p>Designation: ${data2[0].Designation}</p>
 
                 <p class="print-footer text-center">This is a system-generated quotation. Signature is not required.<br><b>Thank you for your Business</b></p>
               
@@ -565,7 +565,7 @@ var htmldata = `
 
 function sendpdf() {
 
-    $('#loderid').show();
+    $('#loderid').removeClass("d-none")
 
     var tickitnoid = $('#tickitnoid').val();
 
@@ -580,7 +580,7 @@ function sendpdf() {
             //  baseUrl: "https://ifm360.in/Ticketing/QuotationtoClientPDF"
         },
         success: function (data) {
-            $('#loderid').hide();
+            $('#loderid').addClass("d-none")
             Swal.fire({
                 title: "success",
                 html: data.success,
@@ -607,7 +607,7 @@ function sendpdf() {
 function ApproveandReview(id) {
     var tickitnoid = $('#tickitnoid').val();
     //var htmldata= retundhtml(tickitnoid)
-
+    $('#loderid').removeClass("d-none")
     $.ajax({
         url: myurl + '/QMS/ApprovedAndReview1',
 
@@ -618,7 +618,7 @@ function ApproveandReview(id) {
 
         },
         success: function (data) {
-
+            $('#loderid').addClass("d-none");
             Swal.fire({
                 title: "success",
                 html: data.message,
@@ -674,4 +674,83 @@ function Execute(id) {
 
         },
     });
+}
+//----------------------------------------------
+
+function viewmodel(id) {
+
+    $.ajax({
+        url: myurl + '/Master/GetItem',
+
+        type: 'Get',
+        data: {
+            tickitno: id,
+
+
+        },
+        success: function (data) {
+
+            $("#mymodel").show();
+            $("#databody").empty();
+            data = JSON.parse(data);
+            console.log(data)
+            if (data.length > 0) {
+                $("#selectticketno").val(id)
+                var tr = "";
+                var sum=0;
+                for (var e of data) {
+                    tr += `
+                        <tr>
+                            <td>${e.ItemCode}</td>
+                            <td>${e.ItemName}</td>
+                            <td>${e.ItemUnit}</td>
+                                <td>${e.ItemRate}</td>
+                                    <td>${e.ItemQty}</td>
+                                        <td>${e.GrossAmt}</td>
+                        
+                        
+                        
+                        </tr>
+                        `
+                    const rawAmount = e.GrossAmt || "";
+                    const cleanedAmount = rawAmount.replace(/\n/g, "").trim();
+
+                    if (!isNaN(cleanedAmount)) {
+                        let numericValue = parseFloat(cleanedAmount);
+                        sum += isNaN(numericValue) ? 0 : numericValue;
+                    }
+                }
+                var gst = sum * 18 / 100;
+                var grandtotal = sum +gst;
+                tr += `
+                           <tr>
+    <td colspan="5" align="right"><strong>Total Amount</strong></td>
+    <td><strong>${sum.toFixed(2)}</strong></td>
+</tr>
+<tr>
+    <td colspan="5" align="right"><strong>GST (18%)</strong></td>
+    <td><strong>${gst.toFixed(2)}</strong></td>
+</tr>
+<tr>
+    <td colspan="5" align="right"><strong>Grand Total Amount</strong></td>
+    <td><strong>${grandtotal.toFixed(2)}</strong></td>
+</tr>
+                            `
+                $("#databody").append(tr);
+                //CreateTableFromArray(data, 'modal-body')
+            }
+
+
+        },
+        error: function (data) {
+
+            var data = {
+                status: "Error",
+                msg: "Error on server.",
+                data: [],
+            }
+
+        },
+    });
+
 }

@@ -20,20 +20,28 @@
                              class="img-fluid" alt="Sample image">
                     </div>
                     <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                        <form method="post">
-                            <!-- Email input -->
+                        <form method="post" asp-controller="Home" asp-action="Login">
+                            @if (TempData["AlertMessage"] != null)
+                            {
+                                var type = TempData["AlertType"] ?? "info"; // fallback
+                                <div class="alert alert-@type alert-dismissible fade show" role="alert">
+                                    @TempData["AlertMessage"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            }
                             <div data-mdb-input-init class="form-outline mb-4">
-                                <label class="form-label" for="form3Example3">User Name</label>
+                                <label class="form-label" for="form3Example3">LoginId</label>
                                 <input asp-for="uname" type="text" id="form3Example3" class="form-control form-control-lg"
-                                       placeholder="User Name" />
-                              
+                                       placeholder="Enter LoginId" />
+                                @Html.ValidationMessageFor(m => m.uname, "", new { @class = "text-danger" })
                             </div>
 
                             <!-- Password input -->
                             <div data-mdb-input-init class="form-outline mb-3">
                                 <label class="form-label" for="form3Example4">Password</label>
                                 <input asp-for="pwd" type="password" id="form3Example4" class="form-control form-control-lg"
-                                       placeholder="Password" />
+                                       placeholder="Enter Password" />
+                                @Html.ValidationMessageFor(m => m.pwd, "", new { @class = "text-danger" })
                             
                             </div>
 
@@ -56,6 +64,7 @@
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script src="~\views\shared\_validationscriptspartial.cshtml">d:\nadeem ali\qms\qms\views\shared\_validationscriptspartial.cshtml</script>
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -65,9 +74,7 @@
         });
     });
     
-    var message = '@ViewBag.message';
-    if (message)
-        alert(message)
+  
 
 </script>
 

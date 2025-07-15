@@ -189,8 +189,23 @@
                 <h6 class="modal-title">Quotation Item List</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="closemodel()" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="modal-body">
-                
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ItemCode</th>
+                            <th>ItemName</th>
+                            <th>ItemUnit</th>
+                            <th>ItemRate</th>
+                            <th>ItemQty</th>
+                            <th>GrossAmt</th>
+                        </tr>
+                    </thead>
+                    <tbody id="databody">
+                        <!-- Dynamic rows will be inserted here -->
+                    </tbody>
+                </table>
+
             </div>
             <input type="hidden" id="selectticketno"/>
             <div class="col-md-6">
@@ -375,42 +390,7 @@
     }
 
 
-    function viewmodel(id) {
-
-        $.ajax({
-            url: myurl+'/Master/GetItem',
-
-            type: 'Get',
-            data: {
-                tickitno: id,
-            
-
-            },
-            success: function (data) {
-
-                $("#mymodel").show();
-                $("#modal-body").empty();
-                data = JSON.parse(data);
-                console.log(data)
-                if (data.length > 0) {
-                    $("#selectticketno").val(id)
-                    CreateTableFromArray(data, 'modal-body')
-                }
-
-
-            },
-            error: function (data) {
-
-                var data = {
-                    status: "Error",
-                    msg: "Error on server.",
-                    data: [],
-                }
-
-            },
-        });
-
-    }
+    
     function ApproveandReview1(id) {
         $("#mymodel").hide();
         $("#fullscreen-loader").removeClass("d-none");

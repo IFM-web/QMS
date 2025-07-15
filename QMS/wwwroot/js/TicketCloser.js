@@ -460,7 +460,7 @@ function TicketClosureBinddd(ticketno) {
             /* $('#th1').html(1);*/
             $('#th2').html(data[0].Observation);
             $('#th3').html(data[0].Description);
-            $('#th4').html(data[0].EmpName);
+            $('#th4').html(data[0].AssignedEmpName + ' (' + data[0].AssignedEmpID + ')');
             var noImage =myurl + "/NoImage.jpg";
 
             var row = "";

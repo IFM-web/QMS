@@ -61,6 +61,8 @@ namespace QMS.Controllers
                 string Msg = "";
                 int ItemCount = 0;
 
+                string UserId = HttpContext.Session.GetString("UserId");
+
 
 
 
@@ -101,7 +103,7 @@ namespace QMS.Controllers
                         }
                     }
 
-                    util.Fill("update GroupLNewAppTicketMaster set Status='Quotation Prepared',ManageFeesId='"+ManageFeesId+"' where MannualTicketNo='" + TicketNO + "' ", util.strElect);
+                    util.Fill("update GroupLNewAppTicketMaster set Status='Quotation Prepared',QuotationPrepared_Date=getdate(),Preparedby='" + UserId + "',ManageFeesId='"+ManageFeesId+"' where MannualTicketNo='" + TicketNO + "' ", util.strElect);
                 }
                 return Json(new { message = "Quotation Inserted Successfully!" }); 
             }
@@ -228,7 +230,7 @@ namespace QMS.Controllers
                         }
                     }
 
-                    util.Fill("update GroupLNewAppTicketMaster set Status='Quotation Prepared',ManageFeesId='"+ ManageFeesId + "' where MannualTicketNo='" + TicketNO + "' ", util.strElect);
+                    util.Fill("update GroupLNewAppTicketMaster set Status='Quotation Prepared',QuotationPrepared_date=getdate(),ManageFeesId='" + ManageFeesId + "' where MannualTicketNo='" + TicketNO + "' ", util.strElect);
                 }
                 return Json(new { message = "Review Quotation Updated Successfully!" });
             }
